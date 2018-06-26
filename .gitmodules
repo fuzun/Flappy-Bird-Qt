@@ -1,0 +1,3 @@
+[submodule "source/strobe-api"]
+	path = source/strobe-api
+	url = https://github.com/fuzun/strobe-api
