@@ -19,6 +19,7 @@ SOFTWARE.
 */
 
 #include "Sound.h"
+
 #include "Game.h"
 
 void Sound::playIfEnabled()

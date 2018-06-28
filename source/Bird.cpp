@@ -24,7 +24,7 @@ SOFTWARE.
 #include <QPropertyAnimation>
 
 Bird::Bird(const QPointF& pos, const QPixmap& pixmap, const qreal &groundStartPosY, int scrWidth, int scrHeight, qreal scaleF)
-    : QGraphicsPixmapItem(pixmap), groundYPos(groundStartPosY), screenWidth(scrWidth), screenHeight(scrHeight), scaleFactor(scaleF)
+    : QGraphicsPixmapItem(pixmap), groundYPos(groundStartPosY), scaleFactor(scaleF), screenWidth(scrWidth), screenHeight(scrHeight)
 {
     setCacheMode(ItemCoordinateCache);
 
@@ -127,7 +127,7 @@ void Bird::gravitation()
 {
     birdDesigner->setInterval(85);
 
-    rotate(90, 625, QEasingCurve::InQuart);
+    rotate(90, 675, QEasingCurve::InCubic);
 
     qreal endPos = groundYPos;
     qreal curPosY = this->y();

@@ -23,13 +23,15 @@ SOFTWARE.
 
 #include <QApplication>
 
+#define TRUE 1
+#define FALSE 0
 
 #define ARRAY_SIZE(ARR) (sizeof(ARR) / sizeof(*(ARR)))
 
 #define PARAM_BIRD_OSCILLATE_FACTOR (screenHeight / 40)
 
-#define TRUE 1
-#define FALSE 0
+#define PIXMAP_SCALE(pixmap, scaleFactor) \
+    pixmap = (pixmap).scaled((pixmap).size() * scaleFactor);
 
 #define GAME_NAME "Flappy Bird Qt"
 #define GAME_VERSION "1.0"
@@ -38,11 +40,66 @@ SOFTWARE.
 #define GAME_DEFAULT_SCALEFACTOR 1.6
 #define GAME_DEFAULT_SOUND_ENABLED FALSE
 #define GAME_DEFAULT_VIEWPORTUPDATE 1
-#define GAME_DEFAULT_SWAPINTERVAL 1
+// #define GAME_DEFAULT_SWAPINTERVAL 1
 #define GAME_DEFAULT_OPENGL_ENABLED FALSE
 #define GAME_DEFAULT_ANTIALIASING_ENABLED TRUE
 #define GAME_DEFAULT_SMOOTHPIXMAPTRANSFORM_ENABLED TRUE
 #define GAME_DEFAULT_HQANTIALIASING_ENABLED FALSE
+#define GAME_DEFAULT_FPSCAP TRUE
+
+#define GROUP_NEWROUND 0
+#define GROUP_GAMEPLAY 1
+#define GROUP_ROUNDEND 2
+#define GROUP_FIRSTSCREEN 3
+
+#define STROBE_ENABLED TRUE
+#define STROBE_DEFAULT_DIALOG_UPDATEINTERVAL 20 // in milliseconds
+#define STROBE_DEFAULT_DIALOG_ENABLED TRUE
+#define STROBE_DEFAULT_METHOD 1
+#define STROBE_DEFAULT_COOLDOWN_DELAY 3 // in seconds
+#define STROBE_DEFAULT_SWAPINTERVAL 5 // in seconds
+#define STROBE_DEFAULT_DEVIATION_LIMIT 5.0
+
+#define PHYSICS_ONLYGROUND_SLOW_RATE 2.0
+#define PHYSICS_DEFAULT_TICKRATE 5
+#define PHYSICS_DEFAULT_SPEEDFACTOR 1.0
+#define PHYSICS_DEFAULT_DISABLECOLLISIONDETECTION FALSE
+#define PHYSICS_COMPLEXANALYSIS_ENABLED TRUE
+#define PHYSICS_UNIT_MOVE (1 / 350.0)
+#define PHYSICS_UNIT_MOVE_RATE(reference) ((reference) * PHYSICS_UNIT_MOVE)
+
+#define POS_Y_LOGO(height) (((height) / 2) - ((height) / 4.5))
+
+#define CONFIG_SCORE_RECORD "Score_Record"
+#define CONFIG_FILENAME "config.ini"
+#define CONFIG_GENERAL "General"
+#define CONFIG_GRAPHICS "Graphic"
+#define CONFIG_FPSCAP "FPSCap"
+#define CONFIG_STROBE "Strobe"
+#define CONFIG_STROBE_ENABLED "Enabled"
+#define CONFIG_STROBE_DIALOG_UPDATEINTERVAL "DialogUpdateInterval"
+#define CONFIG_STROBE_DIALOG_ENABLED "Dialog"
+#define CONFIG_STROBE_METHOD "Method"
+#define CONFIG_STROBE_COOLDOWN_DELAY "CooldownDelay"
+#define CONFIG_STROBE_SWAPINTERVAL "SwapInterval"
+#define CONFIG_STROBE_DEVIATION_LIMIT "DeviationLimit"
+#define CONFIG_FULLSCREEN "Fullscreen"
+#define CONFIG_SCALEFACTOR "ScaleFactor"
+#define CONFIG_SCREENWIDTH "ScreenWidth"
+#define CONFIG_SCREENHEIGHT "ScreenHeight"
+#define CONFIG_SOUNDENABLED "Sound"
+#define CONFIG_OPENGL "OpenGL"
+#define CONFIG_ANTIALIASING "Antialiasing"
+#define CONFIG_SMOOTHPIXMAPTRANSFORM "SmoothPixmapTransform"
+#define CONFIG_HQANTIALIASING "HighQualityAntiAliasing"
+// #define CONFIG_SWAPINTERVAL "SwapInterval"
+#define CONFIG_VIEWPORTUPDATE "ViewportUpdateMode"
+#define CONFIG_PHYSICS "Physics"
+#define CONFIG_PHYSICS_COMPLEXANALYSIS "ComplexAnalyse"
+#define CONFIG_PHYSICS_TICKRATE "TickRate"
+#define CONFIG_PHYSICS_SPEEDFACTOR "SpeedFactor"
+#define CONFIG_PHYSICS_DISABLECOLLISIONDETECTION "DisableCollisionDetection"
+
 
 #define IMG_BACKGROUND_DAY ":/graphics/background_day.png"
 #define IMG_BACKGROUND_NIGHT ":/graphics/background_night.png"
@@ -82,46 +139,8 @@ SOFTWARE.
 #define SND_SWOOSHING ":/sounds/swooshing.wav"
 #define SND_WING ":/sounds/wing.wav"
 
-#define POS_Y_LOGO(height) (((height) / 2) - ((height) / 4.5))
-
-#define CONFIG_SCORE_RECORD "Score_Record"
-#define CONFIG_FILENAME "config.ini"
-#define CONFIG_GENERAL "General"
-#define CONFIG_GRAPHICS "Graphic"
-#define CONFIG_FULLSCREEN "Fullscreen"
-#define CONFIG_SCALEFACTOR "ScaleFactor"
-#define CONFIG_SCREENWIDTH "ScreenWidth"
-#define CONFIG_SCREENHEIGHT "ScreenHeight"
-#define CONFIG_SOUNDENABLED "Sound"
-#define CONFIG_OPENGL "OpenGL"
-#define CONFIG_ANTIALIASING "Antialiasing"
-#define CONFIG_SMOOTHPIXMAPTRANSFORM "SmoothPixmapTransform"
-#define CONFIG_HQANTIALIASING "HighQualityAntiAliasing"
-#define CONFIG_SWAPINTERVAL "SwapInterval"
-#define CONFIG_VIEWPORTUPDATE "ViewportUpdateMode"
-#define CONFIG_PHYSICS "Physics"
-#define CONFIG_PHYSICS_COMPLEXANALYSIS "ComplexAnalyse"
-#define CONFIG_PHYSICS_TICKRATE "TickRate"
-
-#define GROUP_NEWROUND 0
-#define GROUP_GAMEPLAY 1
-#define GROUP_ROUNDEND 2
-#define GROUP_FIRSTSCREEN 3
-
-#define PHYSICS_ONLYGROUND_SLOW_RATE 2.0
-#define PHYSICS_DEFAULT_TICKRATE 5 // Triggered each 5 msec
-#define PHYSICS_COMPLEXANALYSIS_ENABLED TRUE
-#define PHYSICS_UNIT_MOVE (1 / 350.0)
-#define PHYSICS_UNIT_MOVE_RATE(reference) ((reference) * PHYSICS_UNIT_MOVE)
-
-#define PIXMAP_SCALE(pixmap, scaleFactor) \
-    pixmap = (pixmap).scaled((pixmap).size() * scaleFactor);
-
-
-class QPropertyAnimation; // bird.h scene.h
-class QGraphicsPixmapItem; // bird.h physics.h scene.h
-class QTimer; // bird.h physics.h
-class QPropertyAnimation; // bird.h scene.h
-class Bird; // scene.h physics.h
+#if STROBE_ENABLED == FALSE
+#define STROBE_DISABLED
+#endif
 
 #endif // COMMON_H

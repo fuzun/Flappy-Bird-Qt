@@ -28,7 +28,7 @@ class Sound;
 class Game
 {
 public:
-    Game(class QGraphicsView *GraphicsView, class QSettings *cfg, class QSettings *registry, int windowWidth, int windowHeight);
+    Game(class View *GraphicsView, class QSettings *cfg, class QSettings *registry, int windowWidth, int windowHeight);
     ~Game();
 
    void clickEvent();
@@ -58,27 +58,28 @@ public:
    Sound *sound_wing;
 
    class Scene *scene;
-   class QGraphicsView *graphicsView;
+   class View *graphicsView;
 
 private:
     bool soundEnabled;
     bool gameFinished, gameStarted;
     bool gameActuallyStarted;
     bool physicsComplexAnalysis;
+    bool physicsDisableCollisionDetection;
 
     int score, scoreRecord;
     int screenWidth, screenHeight;
     int physicsTickRate;
 
+    qreal physicsSpeedFactor;
     qreal scaleFactor;
-
-    class QOpenGLWidget *glWidget;
 
     void loadConfiguration();
 
 protected:
     class QSettings *config;
     class QSettings *registry;
+
     class Physics *physics;
 
 };

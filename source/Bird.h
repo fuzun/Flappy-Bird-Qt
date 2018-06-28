@@ -50,7 +50,6 @@ public:
     void fall();
 
 private:
-
     typedef enum{
         up,
         middle,
@@ -59,13 +58,17 @@ private:
     WingStates wingState;
 
     bool wingDirection;
-    BirdTypes birdType;
-    qreal currentRotation;
     bool oscillateDirection;
-    QTimer *birdDesigner;
-    QPropertyAnimation *yAnimator;
-    QPropertyAnimation *oscillator;
-    QPropertyAnimation *rotator;
+
+    BirdTypes birdType;
+
+    qreal currentRotation;
+
+    class QTimer *birdDesigner;
+
+    class QPropertyAnimation *yAnimator;
+    class QPropertyAnimation *oscillator;
+    class QPropertyAnimation *rotator;
 
 private slots:
     void gravitation();
@@ -74,10 +77,11 @@ private slots:
 
 protected:
     qreal groundYPos;
-    void rotate(const qreal &end, const int &duration, const QEasingCurve &curve);
-    int screenWidth, screenHeight;
     qreal scaleFactor;
 
+    void rotate(const qreal &end, const int &duration, const QEasingCurve &curve);
+
+    int screenWidth, screenHeight;
 };
 
 #endif // BIRD_H

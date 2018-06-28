@@ -23,12 +23,10 @@ SOFTWARE.
 
 #include "common.h"
 
-class Game;
-
 class Physics
 {
 public:
-    Physics(Game *parent_game, int tickRate = 5, bool complexAnalyse = 0, bool isOnlyGround = 0);
+    Physics(class Game *parent_game, int tickRate = 5, bool complexAnalyse = 0, bool isOnlyGround = 0, qreal speedFactor = 1.0, bool isCollisionDetectionDisabled = 0);
     virtual ~Physics();
 
     void start();
@@ -49,9 +47,12 @@ public:
 private:
     int pipeCriticX;
 
+    qreal speedfactor;
+
     void moveGround();
     void movePipes();
 
+    bool collisionDetectionDisabled;
     bool pipeMarkers[4];
     bool markers[3];
 
@@ -60,13 +61,14 @@ private:
 
     class QTimer *physicsTimer;
 
-    static int pipeCriticXFinder(const QGraphicsPixmapItem& item_pipe);
+    static int pipeCriticXFinder(const class QGraphicsPixmapItem& item_pipe);
 
     class QTransform *_transform;
 
 protected:
-    Game *game;
-    Bird *bird;
+    class Game *game;
+
+    class Bird *bird;
 
     bool complexAnalysis;
     bool onlyGround;
@@ -74,7 +76,7 @@ protected:
     int updateInterval;
 
     virtual bool collisionCheck();
-    virtual bool collisionCheckComplex(const QGraphicsPixmapItem& item_pipe);
+    virtual bool collisionCheckComplex(const class QGraphicsPixmapItem& item_pipe);
 };
 
 #endif // PHYSICS_H

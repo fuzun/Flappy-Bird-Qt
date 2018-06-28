@@ -21,20 +21,19 @@ SOFTWARE.
 #include "Physics.h"
 
 #include <QMainWindow>
-#include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QTimer>
 #include <QTransform>
 
 #include "Game.h"
+#include "View.h"
 #include "Bird.h"
 #include "Scene.h"
 
 
-Physics::Physics(Game *parent_game, int tickRate, bool complexAnalyse, bool isOnlyGround)
- :  game(parent_game), complexAnalysis(complexAnalyse), onlyGround(isOnlyGround), updateInterval(tickRate)
+Physics::Physics(Game *parent_game, int tickRate, bool complexAnalyse, bool isOnlyGround, qreal speedFactor, bool isCollisionDetectionDisabled)
+ :  game(parent_game), speedfactor(speedFactor), collisionDetectionDisabled(isCollisionDetectionDisabled), complexAnalysis(complexAnalyse), onlyGround(isOnlyGround), updateInterval(tickRate)
 {
-
     _transform = new QTransform();
 
     bird = game->scene->bird;
@@ -98,7 +97,7 @@ void Physics::start()
 void Physics::moveGround()
 {
     game->scene->updateGround();
-    game->scene->ground->setPos(game->scene->ground->pos().x() - PHYSICS_UNIT_MOVE_RATE(game->getScreenWidth()), game->scene->ground->pos().y());
+    game->scene->ground->setPos(game->scene->ground->pos().x() - (PHYSICS_UNIT_MOVE_RATE(game->getScreenWidth()) * speedfactor), game->scene->ground->pos().y());
 }
 
 
@@ -156,6 +155,9 @@ bool Physics::collisionCheckComplex(const QGraphicsPixmapItem& item_pipe)
 
 bool Physics::collisionCheck()
 {
+    if(collisionDetectionDisabled)
+        return false;
+
     birdRect.x = bird->x();
     birdRect.y = bird->y();
     birdRect.width = bird->x() + bird->boundingRect().width();
@@ -284,12 +286,12 @@ void Physics::movePipes()
     }
 
 
-    game->scene->pipe[1][1]->setPos(game->scene->pipe[1][1]->pos().x() - PHYSICS_UNIT_MOVE_RATE(game->getScreenWidth()), game->scene->pipe[1][1]->y());
-    game->scene->pipe[0][1]->setPos(game->scene->pipe[0][1]->pos().x() - PHYSICS_UNIT_MOVE_RATE(game->getScreenWidth()), game->scene->pipe[0][1]->y());
-    game->scene->pipe[1][0]->setPos(game->scene->pipe[1][0]->pos().x() - PHYSICS_UNIT_MOVE_RATE(game->getScreenWidth()), game->scene->pipe[1][0]->y());
-    game->scene->pipe[0][0]->setPos(game->scene->pipe[0][0]->pos().x() - PHYSICS_UNIT_MOVE_RATE(game->getScreenWidth()), game->scene->pipe[0][0]->y());
-    game->scene->pipe[1][2]->setPos(game->scene->pipe[1][2]->pos().x() - PHYSICS_UNIT_MOVE_RATE(game->getScreenWidth()), game->scene->pipe[1][2]->y());
-    game->scene->pipe[0][2]->setPos(game->scene->pipe[0][2]->pos().x() - PHYSICS_UNIT_MOVE_RATE(game->getScreenWidth()), game->scene->pipe[0][2]->y());
+    game->scene->pipe[1][1]->setPos(game->scene->pipe[1][1]->pos().x() - (PHYSICS_UNIT_MOVE_RATE(game->getScreenWidth()) * speedfactor), game->scene->pipe[1][1]->y());
+    game->scene->pipe[0][1]->setPos(game->scene->pipe[0][1]->pos().x() - (PHYSICS_UNIT_MOVE_RATE(game->getScreenWidth()) * speedfactor), game->scene->pipe[0][1]->y());
+    game->scene->pipe[1][0]->setPos(game->scene->pipe[1][0]->pos().x() - (PHYSICS_UNIT_MOVE_RATE(game->getScreenWidth()) * speedfactor), game->scene->pipe[1][0]->y());
+    game->scene->pipe[0][0]->setPos(game->scene->pipe[0][0]->pos().x() - (PHYSICS_UNIT_MOVE_RATE(game->getScreenWidth()) * speedfactor), game->scene->pipe[0][0]->y());
+    game->scene->pipe[1][2]->setPos(game->scene->pipe[1][2]->pos().x() - (PHYSICS_UNIT_MOVE_RATE(game->getScreenWidth()) * speedfactor), game->scene->pipe[1][2]->y());
+    game->scene->pipe[0][2]->setPos(game->scene->pipe[0][2]->pos().x() - (PHYSICS_UNIT_MOVE_RATE(game->getScreenWidth()) * speedfactor), game->scene->pipe[0][2]->y());
 
 
     if(game->scene->pipe[1][1]->pos().x() < -game->scene->pipe[1][1]->boundingRect().width())

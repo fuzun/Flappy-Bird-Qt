@@ -27,10 +27,12 @@ SOFTWARE.
 #include <QKeyEvent>
 #include <QPropertyAnimation>
 #include <QPainter>
-#include <QGraphicsView>
-#include "Button.h"
+
 #include "Game.h"
+#include "View.h"
 #include "Bird.h"
+#include "Button.h"
+
 
 
 Scene::Scene(Game *parent_game, const QRectF& rect) : QGraphicsScene(rect), game(parent_game)
@@ -61,15 +63,16 @@ Scene::Scene(Game *parent_game, const QRectF& rect) : QGraphicsScene(rect), game
     PIXMAP_SCALE(pixmap_ground, game->getScaleFactor())
     groundImage = QImage(game->getScreenWidth() * 2, pixmap_ground.height(), QImage::Format_RGB32);
     groundImage.fill(0);
-    groundPainter.begin(&groundImage);
+    groundPainter = new QPainter();
+    groundPainter->begin(&groundImage);
     int _indicator = 0;
     int _counter = 0;
     for(; _counter < ((game->getScreenWidth() * 2) / pixmap_ground.width()); ++_counter)
     {
-        groundPainter.drawPixmap(_indicator, 0, pixmap_ground.width(), pixmap_ground.height(), pixmap_ground);
+        groundPainter->drawPixmap(_indicator, 0, pixmap_ground.width(), pixmap_ground.height(), pixmap_ground);
         _indicator += pixmap_ground.width();
     }
-    groundPainter.end();
+    groundPainter->end();
 
     QImage buffer((_counter - 1) * pixmap_ground.width(), pixmap_ground.height(), QImage::Format_RGB32);
     buffer = groundImage.copy(0,0,(_counter - 1) * pixmap_ground.width(), pixmap_ground.height());
@@ -241,6 +244,7 @@ Scene::~Scene()
     delete fadeReady;
     delete isClickAvailable[0];
     delete isClickAvailable[1];
+    delete groundPainter;
 }
 
 bool Scene::isGroupVisible(int groupIndex)
@@ -335,10 +339,10 @@ void Scene::updateGround()
 {
     if(ground->x() <= -(ground->boundingRect().width() / 2))
     {
-        groundPainter.begin(&groundImage);
-        groundPainter.drawPixmap(groundImage.width(), 0, groundImage.width() / 2, groundImage.height(), QPixmap::fromImage(groundImage.copy(0, 0, groundImage.width() / 2, groundImage.height())));
-        groundPainter.drawPixmap(0, 0, ground->boundingRect().width() / 2, ground->boundingRect().height(), QPixmap::fromImage(groundImage.copy(groundImage.width() / 2, 0, groundImage.width() / 2, groundImage.height())));
-        groundPainter.end();
+        groundPainter->begin(&groundImage);
+        groundPainter->drawPixmap(groundImage.width(), 0, groundImage.width() / 2, groundImage.height(), QPixmap::fromImage(groundImage.copy(0, 0, groundImage.width() / 2, groundImage.height())));
+        groundPainter->drawPixmap(0, 0, ground->boundingRect().width() / 2, ground->boundingRect().height(), QPixmap::fromImage(groundImage.copy(groundImage.width() / 2, 0, groundImage.width() / 2, groundImage.height())));
+        groundPainter->end();
         ground->setPixmap(QPixmap::fromImage(groundImage));
         ground->setPos(0, ground->y());
     }

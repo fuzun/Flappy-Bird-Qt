@@ -21,23 +21,22 @@ SOFTWARE.
 #include "Game.h"
 
 #include <QSound>
+#include <QTimer>
 #include <QImage>
 #include <QPainter>
 #include <QSettings>
-#include <QGraphicsView>
 #include <QEasingCurve>
 #include <QTimer>
-#include <QtOpenGL>
 
 #include "MainWindow.h"
+#include "View.h"
 #include "Bird.h"
 #include "Button.h"
 #include "Scene.h"
 #include "Physics.h"
 #include "Sound.h"
 
-
-Game::Game(QGraphicsView *GraphicsView, class QSettings *cfg, class QSettings *settings, int windowWidth, int windowHeight)
+Game::Game(View *GraphicsView, class QSettings *cfg, class QSettings *settings, int windowWidth, int windowHeight)
     : graphicsView(GraphicsView), screenWidth(windowWidth), screenHeight(windowHeight), config(cfg), registry(settings)
 {
     scoreRecord = 0;
@@ -60,7 +59,8 @@ Game::Game(QGraphicsView *GraphicsView, class QSettings *cfg, class QSettings *s
 
     scene = new Scene(this, QRectF(0, 0, screenWidth, screenHeight));
 
-    physics = new Physics(this, physicsTickRate, physicsComplexAnalysis, true);
+    physics = new Physics(this, physicsTickRate, physicsComplexAnalysis, true, physicsSpeedFactor, physicsDisableCollisionDetection);
+
 }
 
 Game::~Game()
@@ -74,12 +74,12 @@ Game::~Game()
     delete sound_swooshing;
     delete sound_wing;
 
-    if(glWidget)
-        delete glWidget;
 }
 
 void Game::loadConfiguration()
 {
+    scaleFactor = config->value(CONFIG_SCALEFACTOR, scaleFactor).toReal();
+
     soundEnabled = registry->value(CONFIG_SOUNDENABLED, soundEnabled).toBool();
     scoreRecord = registry->value(CONFIG_SCORE_RECORD, 0).toInt();
 
@@ -87,50 +87,11 @@ void Game::loadConfiguration()
     soundEnabled = config->value(CONFIG_SOUNDENABLED, soundEnabled).toBool();
     // config->endGroup();
 
-    config->beginGroup(CONFIG_GRAPHICS);
-    scaleFactor = config->value(CONFIG_SCALEFACTOR, scaleFactor).toReal();
-    glWidget = nullptr;
-    if(config->value(CONFIG_OPENGL, GAME_DEFAULT_OPENGL_ENABLED).toBool())
-    {
-        glWidget = new QOpenGLWidget();
-        QTimer::singleShot(2500, [this]() {
-            graphicsView->setViewport(glWidget);
-        });
-    }
-    int _config_viewportupdate = config->value(CONFIG_VIEWPORTUPDATE, GAME_DEFAULT_VIEWPORTUPDATE).toInt();
-    if(_config_viewportupdate == 0)
-    {
-        graphicsView->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
-    }
-    else if(_config_viewportupdate == 1)
-    {
-        graphicsView->setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
-    }
-    else
-    {
-        graphicsView->setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
-    }
-
-    QSurfaceFormat::defaultFormat().setSwapInterval(config->value(CONFIG_SWAPINTERVAL, GAME_DEFAULT_SWAPINTERVAL).toInt());
-
-    if(config->value(CONFIG_ANTIALIASING, GAME_DEFAULT_ANTIALIASING_ENABLED).toBool())
-        graphicsView->setRenderHint(QPainter::Antialiasing);
-    else
-        graphicsView->setRenderHint(QPainter::Antialiasing, 0);
-    if(config->value(CONFIG_SMOOTHPIXMAPTRANSFORM, GAME_DEFAULT_SMOOTHPIXMAPTRANSFORM_ENABLED).toBool())
-        graphicsView->setRenderHint(QPainter::SmoothPixmapTransform);
-    else
-        graphicsView->setRenderHint(QPainter::SmoothPixmapTransform, 0);
-    if(config->value(CONFIG_HQANTIALIASING, GAME_DEFAULT_HQANTIALIASING_ENABLED).toBool())
-        graphicsView->setRenderHint(QPainter::HighQualityAntialiasing);
-    else
-        graphicsView->setRenderHint(QPainter::HighQualityAntialiasing, 0);
-
-    config->endGroup();
-
     config->beginGroup(CONFIG_PHYSICS);
     physicsTickRate = config->value(CONFIG_PHYSICS_TICKRATE, PHYSICS_DEFAULT_TICKRATE).toInt();
     physicsComplexAnalysis = config->value(CONFIG_PHYSICS_COMPLEXANALYSIS, PHYSICS_COMPLEXANALYSIS_ENABLED).toBool();
+    physicsSpeedFactor = config->value(CONFIG_PHYSICS_SPEEDFACTOR, PHYSICS_DEFAULT_SPEEDFACTOR).toReal();
+    physicsDisableCollisionDetection = config->value(CONFIG_PHYSICS_DISABLECOLLISIONDETECTION, PHYSICS_DEFAULT_DISABLECOLLISIONDETECTION).toBool();
     config->endGroup();
 }
 
@@ -230,7 +191,7 @@ void Game::prepareNewRound()
 
 
              delete physics;
-             physics = new Physics(this, physicsTickRate, physicsComplexAnalysis, false);
+             physics = new Physics(this, physicsTickRate, physicsComplexAnalysis, false, physicsSpeedFactor, physicsDisableCollisionDetection);
 
              score = -1;
              updateScore();

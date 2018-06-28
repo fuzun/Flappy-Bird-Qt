@@ -18,31 +18,42 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#ifndef STROBEDIALOG_H
+#define STROBEDIALOG_H
+
 #include "common.h"
 
-#include <QApplication>
-#include <QTime>
+#ifndef STROBE_DISABLED
 
-#include "MainWindow.h"
+#include <QDialog>
 
-int main(int argc, char **argv)
+class StrobeDialog : public QDialog
 {
-    QApplication app(argc, argv);
+    Q_OBJECT
 
-    Q_INIT_RESOURCE(Resource);
-    QCoreApplication::setOrganizationName("fuzun");
-    QCoreApplication::setApplicationName(GAME_NAME);
-    QCoreApplication::setApplicationVersion(GAME_VERSION);
+public:
+    StrobeDialog(class Strobe_Core *strobe_core, QWidget *parent = nullptr, int posX = 0, int posY = 0, int interval = 0);
 
-    qsrand(QTime::currentTime().msec());
+    void setPos(int posX, int posY);
+    void setInterval(int interval);
+    void startUpdate();
+    void stopUpdate();
 
-    MainWindow w;
-#if defined(Q_OS_WIN32) && !defined(Q_WS_SIMULATOR)
-    w.show();
-#elif defined(Q_OS_ANDROID)
-    w.showFullScreen();
+private:
+    class QLabel *info;
+
+    class QLayout *layout;
+
+    class QTimer *updateTimer;
+
+    class Strobe_Core *strobe;
+
+private slots:
+    void updateInfo();
+
+};
+
+
 #endif
 
-    return app.exec();
-}
-
+#endif // STROBE_H

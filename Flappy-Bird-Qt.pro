@@ -23,7 +23,9 @@ SOURCES += \
     source/Physics.cpp \
     source/Scene.cpp \
     source/main.cpp \
-    source/Sound.cpp
+    source/Sound.cpp \
+    source/View.cpp \
+    source/StrobeDialog.cpp
 
 HEADERS += \
     source/MainWindow.h \
@@ -33,7 +35,19 @@ HEADERS += \
     source/Physics.h \
     source/Scene.h \
     source/common.h \
-    source/Sound.h
+    source/Sound.h \
+    source/View.h \
+    source/StrobeDialog.h
 
 RESOURCES += \
     assets/Resource.qrc
+
+# strobe-api :
+
+SOURCES += \
+    source/strobe-api/strobe/strobe-api.cpp \
+    source/strobe-api/strobe/strobe-core.cpp
+
+HEADERS += \
+    source/strobe-api/strobe/strobe-api.h \
+    source/strobe-api/strobe/strobe-core.h

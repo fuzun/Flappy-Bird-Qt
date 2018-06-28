@@ -27,6 +27,8 @@ class Game;
 
 class Sound : protected QSound
 {
+    Q_OBJECT
+
 private:
     Game *game;
 

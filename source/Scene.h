@@ -23,9 +23,7 @@ SOFTWARE.
 
 #include "common.h"
 #include <QGraphicsScene>
-#include <QPainter>
 
-class Game;
 class Button;
 class QGraphicsOpacityEffect;
 
@@ -34,13 +32,13 @@ class Scene : public QGraphicsScene
     Q_OBJECT
 
 public:
-    Scene(Game *parent_game, const QRectF& rect);
+    Scene(class Game *parent_game, const QRectF& rect);
     ~Scene();
 
     QGraphicsPixmapItem *pipe[2][3];
     QGraphicsPixmapItem *ground;
 
-    Bird *bird;
+    class Bird *bird;
 
     void flash(const QColor& color, int duration, const QEasingCurve& curve);
     void fadeGroup(int groupIndex, bool show, int duration, int group2Index = -1);
@@ -61,16 +59,16 @@ private:
     bool *isClickAvailable[2];
     bool *fadeReady;
 
-    QGraphicsOpacityEffect *opacityEffect;
-    QGraphicsOpacityEffect **opacityEffectGroup[2];
+    class QGraphicsOpacityEffect *opacityEffect;
+    class QGraphicsOpacityEffect **opacityEffectGroup[2];
 
-    QPropertyAnimation *opacityAnim;
-    QPropertyAnimation **opacityAnimGroup[2];
+    class QPropertyAnimation *opacityAnim;
+    class QPropertyAnimation **opacityAnimGroup[2];
 
-    QPainter groundPainter;
+    class QPainter *groundPainter;
 
 protected:
-    Game *game;
+    class Game *game;
 
     Button *button[32]; // 32 buttons would probably be enough for this kind of game
     Button *item_button_play;

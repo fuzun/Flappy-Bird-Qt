@@ -18,31 +18,34 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#ifndef VIEW_H
+#define VIEW_H
+
 #include "common.h"
 
-#include <QApplication>
-#include <QTime>
+#include <QGraphicsView>
+#include <QPainter>
 
-#include "MainWindow.h"
-
-int main(int argc, char **argv)
+class View : public QGraphicsView
 {
-    QApplication app(argc, argv);
+    Q_OBJECT
 
-    Q_INIT_RESOURCE(Resource);
-    QCoreApplication::setOrganizationName("fuzun");
-    QCoreApplication::setApplicationName(GAME_NAME);
-    QCoreApplication::setApplicationVersion(GAME_VERSION);
+private:
+    class QElapsedTimer *fpsTimer;
+    class QTimer *strobeFPSUpdater;
+    int frameCount;
+    int tick;
+    class Strobe_Core *strobe;
 
-    qsrand(QTime::currentTime().msec());
+public:
+    View(QWidget *parent, class Strobe_Core *strobe_core = nullptr);
+    ~View();
 
-    MainWindow w;
-#if defined(Q_OS_WIN32) && !defined(Q_WS_SIMULATOR)
-    w.show();
-#elif defined(Q_OS_ANDROID)
-    w.showFullScreen();
-#endif
+    float fps();
 
-    return app.exec();
-}
+protected:
+    void paintEvent(class QPaintEvent *event) override;
 
+};
+
+#endif // VIEW_H

@@ -35,15 +35,29 @@ public:
     ~MainWindow();
 
 protected:
-    class QGraphicsView *graphicsView;
+    class View *graphicsView;
+
     class Game *game;
+
     class QSettings *config, *settings;
+
+    class Strobe_Core *strobe;
+
+    class StrobeDialog *strobeDialog;
 
     qreal scaleFactor;
 
     int screenWidth, screenHeight;
 
     void resizeEvent(QResizeEvent *event) override;
+    void moveEvent(QMoveEvent *event) override;
+
+private:
+    class QTimer *resizer;
+
+    bool resized;
+
+    void prepareManualViewportUpdate();
 };
 
 
