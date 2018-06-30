@@ -23,7 +23,7 @@ SOFTWARE.
 #include <QApplication>
 #include <QTime>
 
-#include "MainWindow.h"
+#include "MainWindow/MainWindow.h"
 
 int main(int argc, char **argv)
 {

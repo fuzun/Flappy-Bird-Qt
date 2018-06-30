@@ -25,10 +25,10 @@ SOFTWARE.
 #include <QTimer>
 #include <QTransform>
 
-#include "Game.h"
-#include "View.h"
-#include "Bird.h"
-#include "Scene.h"
+#include "Game/Game.h"
+#include "View/View.h"
+#include "Bird/Bird.h"
+#include "Scene/Scene.h"
 
 
 Physics::Physics(Game *parent_game, int tickRate, bool complexAnalyse, bool isOnlyGround, qreal speedFactor, bool isCollisionDetectionDisabled)

@@ -28,10 +28,10 @@ SOFTWARE.
 #include <QPropertyAnimation>
 #include <QPainter>
 
-#include "Game.h"
-#include "View.h"
-#include "Bird.h"
-#include "Button.h"
+#include "Game/Game.h"
+#include "View/View.h"
+#include "Bird/Bird.h"
+#include "Button/Button.h"
 
 
 

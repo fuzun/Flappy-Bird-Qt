@@ -28,12 +28,12 @@ SOFTWARE.
 #include <QScreen>
 #include <QtOpenGL>
 
-#include "View.h"
-#include "Game.h"
+#include "View/View.h"
+#include "Game/Game.h"
 
 #ifndef STROBE_DISABLED
 #include "strobe-api/strobe/strobe-core.h"
-#include "StrobeDialog.h"
+#include "StrobeDialog/StrobeDialog.h"
 #endif
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)

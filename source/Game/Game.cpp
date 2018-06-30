@@ -28,13 +28,13 @@ SOFTWARE.
 #include <QEasingCurve>
 #include <QTimer>
 
-#include "MainWindow.h"
-#include "View.h"
-#include "Bird.h"
-#include "Button.h"
-#include "Scene.h"
-#include "Physics.h"
-#include "Sound.h"
+#include "MainWindow/MainWindow.h"
+#include "View/View.h"
+#include "Bird/Bird.h"
+#include "Button/Button.h"
+#include "Scene/Scene.h"
+#include "Physics/Physics.h"
+#include "Sound/Sound.h"
 
 Game::Game(View *GraphicsView, class QSettings *cfg, class QSettings *settings, int windowWidth, int windowHeight)
     : graphicsView(GraphicsView), screenWidth(windowWidth), screenHeight(windowHeight), config(cfg), registry(settings)

@@ -13,31 +13,33 @@ VERSION = 1.0.0
 
 DEFINES += QT_DEPRECATED_WARNINGS
 
+INCLUDEPATH += $$PWD/source
+
 win32:RC_ICONS += assets/icon.ico
 
 SOURCES += \
-    source/MainWindow.cpp \
-    source/Bird.cpp \
-    source/Button.cpp \
-    source/Game.cpp \
-    source/Physics.cpp \
-    source/Scene.cpp \
+    source/MainWindow/MainWindow.cpp \
+    source/Bird/Bird.cpp \
+    source/Button/Button.cpp \
+    source/Game/Game.cpp \
+    source/Physics/Physics.cpp \
+    source/Scene/Scene.cpp \
     source/main.cpp \
-    source/Sound.cpp \
-    source/View.cpp \
-    source/StrobeDialog.cpp
+    source/Sound/Sound.cpp \
+    source/View/View.cpp \
+    source/StrobeDialog/StrobeDialog.cpp
 
 HEADERS += \
-    source/MainWindow.h \
-    source/Bird.h \
-    source/Button.h \
-    source/Game.h \
-    source/Physics.h \
-    source/Scene.h \
+    source/MainWindow/MainWindow.h \
+    source/Bird/Bird.h \
+    source/Button/Button.h \
+    source/Game/Game.h \
+    source/Physics/Physics.h \
+    source/Scene/Scene.h \
     source/common.h \
-    source/Sound.h \
-    source/View.h \
-    source/StrobeDialog.h
+    source/Sound/Sound.h \
+    source/View/View.h \
+    source/StrobeDialog/StrobeDialog.h
 
 RESOURCES += \
     assets/Resource.qrc

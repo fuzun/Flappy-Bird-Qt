@@ -24,9 +24,9 @@ SOFTWARE.
 #include <QString>
 #include <QSound>
 
-#include "Game.h"
-#include "Scene.h"
-#include "Sound.h"
+#include "Game/Game.h"
+#include "Scene/Scene.h"
+#include "Sound/Sound.h"
 
 void ButtonFuncs::about(Game *)
 {
