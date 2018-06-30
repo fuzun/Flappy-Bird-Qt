@@ -36,13 +36,8 @@ int main(int argc, char **argv)
 
     qsrand(QTime::currentTime().msec());
 
-    MainWindow w;
-#if defined(Q_OS_WIN32) && !defined(Q_WS_SIMULATOR)
-    w.show();
-#elif defined(Q_OS_ANDROID)
-    w.showFullScreen();
-#endif
+    MainWindow mainWindow;
+    mainWindow.show();
 
     return app.exec();
 }
-
