@@ -1,3 +1,6 @@
 [submodule "source/strobe-api"]
 	path = source/strobe-api
 	url = https://github.com/fuzun/strobe-api
+[submodule "source/tiny-dnn"]
+	path = source/tiny-dnn
+	url = https://github.com/tiny-dnn/tiny-dnn
