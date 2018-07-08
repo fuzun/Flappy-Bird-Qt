@@ -29,6 +29,12 @@ public:
     Physics(class Game *parent_game, int tickRate = 5, bool complexAnalyse = 0, bool isOnlyGround = 0, qreal speedFactor = 1.0, bool isCollisionDetectionDisabled = 0);
     virtual ~Physics();
 
+    struct Vector2D
+    {
+        float x;
+        float y;
+    };
+
     void start();
     void stop();
     void switchOnlyGroundMove();
@@ -36,6 +42,7 @@ public:
     bool isOnlyGround();
 
     static int randInt(int low, int high);
+    static Vector2D generateVector2D(float x, float y);
 
     typedef struct{
         qreal x;
