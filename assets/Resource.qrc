@@ -55,6 +55,8 @@
         <file alias="share.png">graphic/share.png</file>
         <file alias="soundDisabled.png">graphic/soundDisabled.png</file>
         <file alias="soundEnabled.png">graphic/soundEnabled.png</file>
+        <file alias="ai.png">graphic/ai.png</file>
+        <file alias="aiPlay.png">graphic/aiPlay.png</file>
     </qresource>
     <qresource prefix="/sounds">
         <file alias="die.wav">sound/die.wav</file>
