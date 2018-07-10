@@ -72,6 +72,7 @@ Physics::Physics(Game *parent_game, int tickRate, bool complexAnalyse, bool isOn
             movePipes();
         }
         moveGround();
+        QApplication::processEvents();
     });
 
     physicsTimer->setInterval(onlyGround ? updateInterval * PHYSICS_ONLYGROUND_SLOW_RATE : updateInterval);
@@ -163,8 +164,12 @@ bool Physics::collisionCheckComplex(const QGraphicsPixmapItem& item_pipe)
 
 bool Physics::collisionCheck()
 {
+    // if(collisionDetectionDisabled)
+    //    return false;
+
+    bool bTrue = true;
     if(collisionDetectionDisabled)
-        return false;
+        bTrue = false;
 
     birdRect.x = bird->x();
     birdRect.y = bird->y();
@@ -175,14 +180,14 @@ bool Physics::collisionCheck()
     {
         if((complexAnalysis && (collisionCheckComplex(*game->scene->pipe[1][1]) || collisionCheckComplex(*game->scene->pipe[0][1]))) || !complexAnalysis)
         {
-            return true;
+            return bTrue;
         }
     }
     else if((birdRect.width >= game->scene->pipe[1][1]->pos().x() && birdRect.x <= game->scene->pipe[1][1]->pos().x() + game->scene->pipe[1][1]->boundingRect().width()) && (birdRect.height > game->scene->pipe[1][1]->pos().y() || birdRect.y < game->scene->pipe[0][1]->pos().y() + game->scene->pipe[0][1]->boundingRect().height()))
     {
         if((complexAnalysis && (collisionCheckComplex(*game->scene->pipe[1][1]) || collisionCheckComplex(*game->scene->pipe[0][1]))) || !complexAnalysis)
         {
-            return true;
+            return bTrue;
         }
     }
 
@@ -190,14 +195,14 @@ bool Physics::collisionCheck()
     {
         if((complexAnalysis && (collisionCheckComplex(*game->scene->pipe[1][2]) || collisionCheckComplex(*game->scene->pipe[0][2]))) || !complexAnalysis)
         {
-            return true;
+            return bTrue;
         }
     }
     else if((birdRect.width >= game->scene->pipe[1][2]->pos().x() && birdRect.x <= game->scene->pipe[1][2]->pos().x() + game->scene->pipe[1][2]->boundingRect().width()) && (birdRect.height > game->scene->pipe[1][2]->pos().y() || birdRect.y < game->scene->pipe[0][2]->pos().y() + game->scene->pipe[0][2]->boundingRect().height()))
     {
         if((complexAnalysis && (collisionCheckComplex(*game->scene->pipe[1][2]) || collisionCheckComplex(*game->scene->pipe[0][2]))) || !complexAnalysis)
         {
-            return true;
+            return bTrue;
         }
     }
 
@@ -205,20 +210,22 @@ bool Physics::collisionCheck()
     {
         if((complexAnalysis && (collisionCheckComplex(*game->scene->pipe[1][0]) || collisionCheckComplex(*game->scene->pipe[0][0]))) || !complexAnalysis)
         {
-            return true;
+            return bTrue;
         }
     }
     else if((birdRect.width >= game->scene->pipe[1][0]->pos().x() && birdRect.x <= game->scene->pipe[1][0]->pos().x() + game->scene->pipe[1][0]->boundingRect().width()) && (birdRect.height > game->scene->pipe[1][0]->pos().y() || birdRect.y < game->scene->pipe[0][0]->pos().y() + game->scene->pipe[0][0]->boundingRect().height()))
     {
         if((complexAnalysis && (collisionCheckComplex(*game->scene->pipe[1][0]) || collisionCheckComplex(*game->scene->pipe[0][0]))) || !complexAnalysis)
         {
-            return true;
+            return bTrue;
         }
     }
 
+
+
     if((birdRect.y < -bird->boundingRect().height()) || (birdRect.height > game->scene->ground->pos().y()))
     {
-        return true;
+        return bTrue;
     }
 
 
@@ -228,18 +235,21 @@ bool Physics::collisionCheck()
         game->updateScore();
         markers[0] = 1;
         markers[2] = 0;
+        game->birdClosestPipe = 2;
     }
     else if((birdRect.x >= game->scene->pipe[1][1]->pos().x() + game->scene->pipe[1][1]->boundingRect().width()) && markers[1] == 0 && (birdRect.width < game->scene->pipe[1][2]->pos().x()))
     {
         game->updateScore();
         markers[0] = 0;
         markers[1] = 1;
+        game->birdClosestPipe = 0;
     }
     else if((birdRect.x >= game->scene->pipe[1][2]->pos().x() + game->scene->pipe[1][2]->boundingRect().width()) && markers[2] == 0 && (birdRect.width < game->scene->pipe[1][0]->pos().x()))
     {
         game->updateScore();
         markers[1] = 0;
         markers[2] = 1;
+        game->birdClosestPipe = 1;
     }
 
     return false;
