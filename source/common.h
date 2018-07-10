@@ -26,13 +26,6 @@ SOFTWARE.
 #define TRUE 1
 #define FALSE 0
 
-#define ARRAY_SIZE(ARR) (sizeof(ARR) / sizeof(*(ARR)))
-
-#define PARAM_BIRD_OSCILLATE_FACTOR (screenHeight / 40)
-
-#define PIXMAP_SCALE(pixmap, scaleFactor) \
-    pixmap = (pixmap).scaled((pixmap).size() * scaleFactor);
-
 #define GAME_NAME "Flappy Bird Qt"
 #define GAME_VERSION "1.0"
 #define GAME_DEFAULT_SCREENWIDTH 480
@@ -40,7 +33,6 @@ SOFTWARE.
 #define GAME_DEFAULT_SCALEFACTOR 1.6
 #define GAME_DEFAULT_SOUND_ENABLED FALSE
 #define GAME_DEFAULT_VIEWPORTUPDATE 1
-// #define GAME_DEFAULT_SWAPINTERVAL 1
 #define GAME_DEFAULT_OPENGL_ENABLED FALSE
 #define GAME_DEFAULT_ANTIALIASING_ENABLED TRUE
 #define GAME_DEFAULT_SMOOTHPIXMAPTRANSFORM_ENABLED TRUE
@@ -51,38 +43,39 @@ SOFTWARE.
 #define GROUP_GAMEPLAY 1
 #define GROUP_ROUNDEND 2
 #define GROUP_FIRSTSCREEN 3
+#define GROUP_MAX_ITEM_COUNT 16
 
 #define STROBE_ENABLED TRUE
 #define STROBE_DEFAULT_DIALOG_UPDATEINTERVAL 20 // in milliseconds
 #define STROBE_DEFAULT_DIALOG_ENABLED TRUE
 #define STROBE_DEFAULT_METHOD 1
 #define STROBE_DEFAULT_COOLDOWN_DELAY 3 // in seconds
-#define STROBE_DEFAULT_SWAPINTERVAL 5 // in seconds
+#define STROBE_DEFAULT_SWAPINTERVAL 0 // in seconds
 #define STROBE_DEFAULT_DEVIATION_LIMIT 5.0
 
 #define PHYSICS_ONLYGROUND_SLOW_RATE 2.0
 #define PHYSICS_DEFAULT_TICKRATE 5
-#define PHYSICS_DEFAULT_SPEEDFACTOR 1.0
+#define PHYSICS_DEFAULT_SPEEDFACTOR 0.9
 #define PHYSICS_DEFAULT_DISABLECOLLISIONDETECTION FALSE
 #define PHYSICS_COMPLEXANALYSIS_ENABLED TRUE
 #define PHYSICS_UNIT_MOVE (1 / 350.0)
 #define PHYSICS_UNIT_MOVE_RATE(reference) ((reference) * PHYSICS_UNIT_MOVE)
 
-#define POS_Y_LOGO(height) (((height) / 2) - ((height) / 4.5))
+#define AI_ENABLED TRUE // Disable AI here
+#define AI_DEFAULT_NEURONCOUNT 16
+#define AI_DEFAULT_BATCHSIZE 16
+#define AI_DEFAULT_EPOCHS 1000
+#define AI_DEFAULT_RealtimeLearning FALSE
+#define AI_DEFAULT_UPDATEINTERVAL 100
+#define AI_DEFAULT_SELFTRAIN FALSE
+#define AI_DEFAULT_CLICKTHRESHOLD 0.5f
+
 
 #define CONFIG_SCORE_RECORD "Score_Record"
 #define CONFIG_FILENAME "config.ini"
 #define CONFIG_GENERAL "General"
 #define CONFIG_GRAPHICS "Graphic"
 #define CONFIG_FPSCAP "FPSCap"
-#define CONFIG_STROBE "Strobe"
-#define CONFIG_STROBE_ENABLED "Enabled"
-#define CONFIG_STROBE_DIALOG_UPDATEINTERVAL "DialogUpdateInterval"
-#define CONFIG_STROBE_DIALOG_ENABLED "Dialog"
-#define CONFIG_STROBE_METHOD "Method"
-#define CONFIG_STROBE_COOLDOWN_DELAY "CooldownDelay"
-#define CONFIG_STROBE_SWAPINTERVAL "SwapInterval"
-#define CONFIG_STROBE_DEVIATION_LIMIT "DeviationLimit"
 #define CONFIG_FULLSCREEN "Fullscreen"
 #define CONFIG_SCALEFACTOR "ScaleFactor"
 #define CONFIG_SCREENWIDTH "ScreenWidth"
@@ -99,6 +92,24 @@ SOFTWARE.
 #define CONFIG_PHYSICS_TICKRATE "TickRate"
 #define CONFIG_PHYSICS_SPEEDFACTOR "SpeedFactor"
 #define CONFIG_PHYSICS_DISABLECOLLISIONDETECTION "DisableCollisionDetection"
+
+#define CONFIG_STROBE "Strobe"
+#define CONFIG_STROBE_ENABLED "Enabled"
+#define CONFIG_STROBE_DIALOG_UPDATEINTERVAL "DialogUpdateInterval"
+#define CONFIG_STROBE_DIALOG_ENABLED "Dialog"
+#define CONFIG_STROBE_METHOD "Method"
+#define CONFIG_STROBE_COOLDOWN_DELAY "CooldownDelay"
+#define CONFIG_STROBE_SWAPINTERVAL "SwapInterval"
+#define CONFIG_STROBE_DEVIATION_LIMIT "DeviationLimit"
+
+#define CONFIG_AI "AI"
+#define CONFIG_AI_NEURONCOUNT "NeuronCount"
+#define CONFIG_AI_BATCHSIZE "BatchSize"
+#define CONFIG_AI_EPOCHS "Epochs"
+#define CONFIG_AI_REALTIMELEARNING "RealtimeLearning"
+#define CONFIG_AI_UPDATEINTERVAL "UpdateInterval"
+#define CONFIG_AI_SELFTRAIN "SelfTraining"
+#define CONFIG_AI_CLICKTHRESHOLD "ClickThreshold"
 
 
 #define IMG_BACKGROUND_DAY ":/graphics/background_day.png"
@@ -133,6 +144,8 @@ SOFTWARE.
 #define IMG_INFO ":/graphics/info.png"
 #define IMG_SOUND_ENABLED ":/graphics/soundEnabled.png"
 #define IMG_SOUND_DISABLED ":/graphics/soundDisabled.png"
+#define IMG_AI ":/graphics/ai.png"
+#define IMG_AIPLAY ":/graphics/aiPlay.png"
 #define SND_DIE ":/sounds/die.wav"
 #define SND_HIT ":/sounds/hit.wav"
 #define SND_POINT ":/sounds/point.wav"
@@ -142,5 +155,18 @@ SOFTWARE.
 #if STROBE_ENABLED == FALSE
 #define STROBE_DISABLED
 #endif
+
+#if AI_ENABLED == FALSE
+#define AI_DISABLED
+#endif
+
+#define ARRAY_SIZE(ARR) (sizeof(ARR) / sizeof(*(ARR)))
+
+#define PARAM_BIRD_OSCILLATE_FACTOR (screenHeight / 40)
+
+#define PIXMAP_SCALE(pixmap, scaleFactor) \
+    pixmap = (pixmap).scaled((pixmap).size() * scaleFactor);
+
+#define POS_Y_LOGO(height) (((height) / 2) - ((height) / 4.5))
 
 #endif // COMMON_H
