@@ -38,6 +38,8 @@ public:
     QGraphicsPixmapItem *pipe[2][3];
     QGraphicsPixmapItem *ground;
 
+    QGraphicsItem *group_item[8][GROUP_MAX_ITEM_COUNT]; // Must be enough
+
     class Bird *bird;
 
     void flash(const QColor& color, int duration, const QEasingCurve& curve);
@@ -46,6 +48,8 @@ public:
     void updateGround();
     void updateScore(int score);
     bool isGroupVisible(int groupIndex);
+
+    Button *item_button_AIPlay; // Should move to AI
 
 private:
     QPixmap pixmap_bigZero;
@@ -74,8 +78,7 @@ protected:
     Button *item_button_play;
     Button *item_button_about;
     Button *item_button_sound;
-
-    QGraphicsItem *group_item[8][16]; // Must be enough
+    Button *item_button_AI;
 
     QGraphicsPixmapItem *item_pixmap_gameOver;
     QGraphicsPixmapItem *item_pixmap_scoreBoard;

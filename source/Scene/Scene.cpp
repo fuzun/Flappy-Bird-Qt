@@ -105,7 +105,28 @@ Scene::Scene(Game *parent_game, const QRectF& rect) : QGraphicsScene(rect), game
     }
     item_button_sound->setPos(game->getScreenWidth() - pixmap_soundEnabled.width(), 0);
 
+#ifndef AI_DISABLED
+    QPixmap pixmap_AIEnabled(IMG_AI);
+    PIXMAP_SCALE(pixmap_AIEnabled, game->getScaleFactor());
+    item_button_AI = new Button(game, pixmap_AIEnabled, ButtonFuncs::aiEnable);
+    item_button_AI->setPos(0, 0);
 
+    //if(game->isAIEnabled())
+    //{
+        QPixmap pixmap_AIPlay(IMG_AIPLAY);
+        PIXMAP_SCALE(pixmap_AIPlay, game->getScaleFactor());
+        item_button_AIPlay = new Button(game, pixmap_AIPlay, ButtonFuncs::aiPlay);
+        item_button_AIPlay->setPos(0, 0);
+        item_button_AIPlay->setVisible(false);
+    //}
+    //else
+    //{
+    //    item_button_AIPlay = nullptr;
+    //}
+#else
+    item_button_AI = nullptr;
+    item_button_AIPlay = nullptr;
+#endif
 
     QPixmap pixmap_pipe_down(IMG_PIPE_DOWN);
     QPixmap pixmap_pipe_up(IMG_PIPE_UP);
@@ -187,7 +208,9 @@ Scene::Scene(Game *parent_game, const QRectF& rect) : QGraphicsScene(rect), game
     button[0] = item_button_play;
     button[1] = item_button_about;
     button[2] = item_button_sound;
-    button[3] = nullptr;
+    button[3] = item_button_AI;
+    button[4] = item_button_AIPlay;
+    button[5] = nullptr;
 
     group_item[GROUP_NEWROUND][0] = item_pixmap_gameInfo;
     group_item[GROUP_NEWROUND][1] = item_pixmap_gameReady;
@@ -205,13 +228,15 @@ Scene::Scene(Game *parent_game, const QRectF& rect) : QGraphicsScene(rect), game
     group_item[GROUP_ROUNDEND][2] = item_button_play;
     group_item[GROUP_ROUNDEND][3] = item_pixmap_endScore;
     group_item[GROUP_ROUNDEND][4] = item_pixmap_endScoreRecord;
+    // group_item[GROUP_ROUNDEND][5] = item_button_AIPlay;
     group_item[GROUP_ROUNDEND][5] = nullptr;
 
     group_item[GROUP_FIRSTSCREEN][0] = item_pixmap_logo;
     group_item[GROUP_FIRSTSCREEN][1] = item_button_play;
     group_item[GROUP_FIRSTSCREEN][2] = item_button_about;
     group_item[GROUP_FIRSTSCREEN][3] = item_button_sound;
-    group_item[GROUP_FIRSTSCREEN][4] = nullptr;
+    group_item[GROUP_FIRSTSCREEN][4] = item_button_AI;
+    group_item[GROUP_FIRSTSCREEN][5] = nullptr;
 
 
     addItem(item_pixmap_logo);
@@ -223,6 +248,10 @@ Scene::Scene(Game *parent_game, const QRectF& rect) : QGraphicsScene(rect), game
     addItem(pipe[1][2]);
     addItem(item_button_about);
     addItem(item_button_sound);
+#ifndef AI_DISABLED
+    addItem(item_button_AI);
+    addItem(item_button_AIPlay);
+#endif
     addItem(item_pixmap_gameReady);
     addItem(item_pixmap_gameInfo);
     addItem(bird);
