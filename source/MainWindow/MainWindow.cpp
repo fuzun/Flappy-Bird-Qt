@@ -40,9 +40,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
     config = new QSettings(QApplication::applicationDirPath() + "/" + CONFIG_FILENAME, QSettings::IniFormat, this);
 
+    bool strobeEnabled;
 #ifndef STROBE_DISABLED
     config->beginGroup(CONFIG_STROBE);
-    bool strobeEnabled = config->value(CONFIG_STROBE_ENABLED, STROBE_ENABLED).toBool();
+    strobeEnabled = config->value(CONFIG_STROBE_ENABLED, STROBE_ENABLED).toBool();
     int strobeMethod = config->value(CONFIG_STROBE_METHOD, STROBE_DEFAULT_METHOD).toInt();
     int strobeDialogUpdateInterval = config->value(CONFIG_STROBE_DIALOG_UPDATEINTERVAL, STROBE_DEFAULT_DIALOG_UPDATEINTERVAL).toInt();
     bool strobeDialogEnabled = config->value(CONFIG_STROBE_DIALOG_ENABLED, STROBE_DEFAULT_DIALOG_ENABLED).toBool();
@@ -57,6 +58,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         strobe = nullptr;
 #else
     strobe = nullptr;
+    strobeEnabled = false;
 #endif
 
 
@@ -124,10 +126,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
             prepareManualViewportUpdate();
         }
 
+#ifndef STROBE_DISABLED
         if(strobeEnabled)
         {
+
             strobe->setMethod(0);
         }
+#endif
     }
 
     //  QSurfaceFormat::defaultFormat().setSwapInterval(config->value(CONFIG_SWAPINTERVAL, GAME_DEFAULT_SWAPINTERVAL).toInt());
@@ -213,8 +218,10 @@ MainWindow::~MainWindow()
 
     delete game;
 
+#ifndef STROBE_DISABLED
     if(strobe != nullptr)
         delete strobe;
+#endif
 }
 
 void MainWindow::prepareManualViewportUpdate()
