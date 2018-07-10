@@ -58,6 +58,19 @@ void ButtonFuncs::soundEnable(Game *game_instance)
     game_instance->soundEnable();
 }
 
+void ButtonFuncs::aiEnable(Game *game_instance)
+{
+    game_instance->AIEnable();
+    QApplication::processEvents();
+    ButtonFuncs::play(game_instance);
+}
+
+void ButtonFuncs::aiPlay(Game *game_instance)
+{
+    game_instance->aiPlays = true;
+    ButtonFuncs::play(game_instance);
+}
+
 void Button::invoke(Game *parent_game)
 {
     bool toggleStatus = this->pixmap() == Pixmap;

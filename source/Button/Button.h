@@ -35,6 +35,8 @@ public:
     static void play(Game *game_instance);
     static void soundEnable(Game *game_instance);
     static void soundDisable(Game *game_instance);
+    static void aiEnable(Game *game_instance);
+    static void aiPlay(Game *game_instance);
     // static void function(Game *game_instance);
 
 private:
