@@ -38,16 +38,21 @@ public:
    void prepareNewRound();
    void soundEnable();
    void soundDisable();
+   void AIEnable();
+   void AIDisable();
 
    bool isGameFinished();
    bool isGameStarted();
    bool isGameActuallyStarted();
    bool isSoundEnabled();
+   bool isAIEnabled();
 
    int getScore();
    int getScoreRecord();
    int getScreenWidth();
    int getScreenHeight();
+
+   int birdClosestPipe; // Move from here!
 
    qreal getScaleFactor();
 
@@ -60,6 +65,8 @@ public:
    class Scene *scene;
    class View *graphicsView;
 
+   bool aiPlays;
+
 private:
     bool soundEnabled;
     bool gameFinished, gameStarted;
@@ -70,6 +77,14 @@ private:
     int score, scoreRecord;
     int screenWidth, screenHeight;
     int physicsTickRate;
+
+    int aiNeuronCount;
+    int aiBatchSize;
+    int aiEpochs;
+    int aiUpdateInterval;
+    bool aiRealtimeLearn;
+    bool aiSelfTrain;
+    float aiClickThreshold;
 
     qreal physicsSpeedFactor;
     qreal scaleFactor;
@@ -82,6 +97,7 @@ protected:
 
     class Physics *physics;
 
+    class AI *ai;
 };
 
 #endif // GAME_H

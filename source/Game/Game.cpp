@@ -36,6 +36,10 @@ SOFTWARE.
 #include "Physics/Physics.h"
 #include "Sound/Sound.h"
 
+#ifndef AI_DISABLED
+#include "AI/AI.h"
+#endif
+
 Game::Game(View *GraphicsView, class QSettings *cfg, class QSettings *settings, int windowWidth, int windowHeight)
     : graphicsView(GraphicsView), screenWidth(windowWidth), screenHeight(windowHeight), config(cfg), registry(settings)
 {
@@ -45,6 +49,11 @@ Game::Game(View *GraphicsView, class QSettings *cfg, class QSettings *settings, 
     gameFinished = 0;
     gameStarted = 0;
     gameActuallyStarted = 0;
+
+    birdClosestPipe = 1;
+
+    aiPlays = false;
+    ai = nullptr;
 
     scaleFactor = GAME_DEFAULT_SCALEFACTOR;
     soundEnabled = GAME_DEFAULT_SOUND_ENABLED;
@@ -60,11 +69,11 @@ Game::Game(View *GraphicsView, class QSettings *cfg, class QSettings *settings, 
     scene = new Scene(this, QRectF(0, 0, screenWidth, screenHeight));
 
     physics = new Physics(this, physicsTickRate, physicsComplexAnalysis, true, physicsSpeedFactor, physicsDisableCollisionDetection);
-
 }
 
 Game::~Game()
 {
+    AIDisable();
     delete physics;
     delete scene;
 
@@ -73,7 +82,6 @@ Game::~Game()
     delete sound_point;
     delete sound_swooshing;
     delete sound_wing;
-
 }
 
 void Game::loadConfiguration()
@@ -92,6 +100,18 @@ void Game::loadConfiguration()
     physicsComplexAnalysis = config->value(CONFIG_PHYSICS_COMPLEXANALYSIS, PHYSICS_COMPLEXANALYSIS_ENABLED).toBool();
     physicsSpeedFactor = config->value(CONFIG_PHYSICS_SPEEDFACTOR, PHYSICS_DEFAULT_SPEEDFACTOR).toReal();
     physicsDisableCollisionDetection = config->value(CONFIG_PHYSICS_DISABLECOLLISIONDETECTION, PHYSICS_DEFAULT_DISABLECOLLISIONDETECTION).toBool();
+    config->endGroup();
+
+    config->beginGroup(CONFIG_AI);
+    aiNeuronCount = config->value(CONFIG_AI_NEURONCOUNT, AI_DEFAULT_NEURONCOUNT).toInt();
+    aiBatchSize = config->value(CONFIG_AI_BATCHSIZE, AI_DEFAULT_BATCHSIZE).toInt();
+    aiEpochs = config->value(CONFIG_AI_EPOCHS, AI_DEFAULT_EPOCHS).toInt();
+    // aiRealtimeLearn = config->value(CONFIG_AI_REALTIMELEARNING, AI_DEFAULT_RealtimeLearning).toBool();
+    aiRealtimeLearn = AI_DEFAULT_RealtimeLearning;
+    aiUpdateInterval = config->value(CONFIG_AI_UPDATEINTERVAL, AI_DEFAULT_UPDATEINTERVAL).toInt();
+    // aiSelfTrain = config->value(CONFIG_AI_SELFTRAIN, AI_DEFAULT_SELFTRAIN).toBool();
+    aiSelfTrain = AI_DEFAULT_SELFTRAIN; // Not implemented yet
+    aiClickThreshold = config->value(CONFIG_AI_CLICKTHRESHOLD, AI_DEFAULT_CLICKTHRESHOLD).toFloat();
     config->endGroup();
 }
 
@@ -132,11 +152,16 @@ void Game::clickEvent()
             if(physics)
                 physics->switchOnlyGroundMove();
 
-            gameStarted = 1;
+            gameStarted = true;
         }
 
         if(scene->isGroupVisible(GROUP_NEWROUND))
             scene->fadeGroup(GROUP_NEWROUND, false, 5);
+
+#ifndef AI_DISABLED
+        if(ai)
+            ai->birdTriggered();
+#endif
 
         scene->bird->rise();
 
@@ -163,11 +188,59 @@ void Game::soundEnable()
     registry->setValue(CONFIG_SOUNDENABLED, soundEnabled);
 }
 
+bool Game::isAIEnabled()
+{
+    if(ai == nullptr)
+        return false;
+    else
+        return true;
+}
+
+void Game::AIEnable()
+{
+    if(!isAIEnabled())
+    {
+#ifndef AI_DISABLED
+        ai = new AI(this, aiNeuronCount, aiBatchSize, aiEpochs, aiUpdateInterval, aiClickThreshold);
+
+        for(int k = 0; k < GROUP_MAX_ITEM_COUNT; k++) // This method should change in future!
+        {
+            if(scene->group_item[GROUP_ROUNDEND][k] == nullptr)
+            {
+                scene->group_item[GROUP_ROUNDEND][k] = scene->item_button_AIPlay;
+                scene->group_item[GROUP_ROUNDEND][k + 1] = nullptr;
+                break;
+            }
+        }
+#endif
+    }
+}
+
+void Game::AIDisable()
+{
+#ifndef AI_DISABLED
+    if(isAIEnabled())
+    {
+        delete ai;
+        ai = nullptr;
+    }
+#endif
+}
+
 void Game::prepareNewRound()
 {
     scene->flash(Qt::black, 500, QEasingCurve::Linear);
 
     QTimer::singleShot(550, [this]() {
+#ifndef AI_DISABLED
+             if(ai)
+             {
+                if(!ai->trainingFinished)
+                    ai->stopTrain();
+                ai->clearData();
+             }
+#endif
+
              int random1 = Physics::randInt(0, 2);
              int random2 = Physics::randInt(0, 1);
 
@@ -196,7 +269,7 @@ void Game::prepareNewRound()
              score = -1;
              updateScore();
 
-             gameStarted = 0;
+             gameStarted = false;
 
              scene->bird->setPos(scene->bird->boundingRect().width() * 2.75, POS_Y_LOGO(screenHeight) + QPixmap(IMG_BIRD_YELLOW_UP).height() * 5);
 
@@ -213,8 +286,8 @@ void Game::prepareFirstGame()
 {
     scene->bird->startOscillate();
 
-    gameFinished = 0;
-    gameActuallyStarted = 1;
+    gameFinished = false;
+    gameActuallyStarted = true;
 }
 
 
@@ -236,8 +309,19 @@ void Game::gameOver()
 
     scene->gameOver(score, scoreRecord);
 
-    gameFinished = 1;
-    gameActuallyStarted = 0;
+    gameFinished = true;
+    gameActuallyStarted = false;
+    birdClosestPipe = 1;
+
+#ifndef AI_DISABLED
+    if(ai)
+    {
+        aiPlays = false;
+        QTimer::singleShot(500, [this]() {
+            ai->train();
+        });
+    }
+#endif
 }
 
 
