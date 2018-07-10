@@ -24,6 +24,7 @@ SOFTWARE.
 #include "AI.h"
 
 #ifndef AI_DISABLED
+
 #include <QTimer>
 #include <QGraphicsLineItem>
 #include <QGraphicsTextItem>
@@ -54,12 +55,35 @@ AI::AI(class Game *parent_game, int aiNeuronCount, int aiBatchSize, int aiEpochs
     linePen.setWidth(2);
     vectorLine->setPen(linePen);
 
+    birdSpeedVectorLine = new QGraphicsLineItem();
+    QPen linePen2;
+    linePen2.setColor(Qt::darkMagenta);
+    linePen2.setWidth(2);
+    birdSpeedVectorLine->setPen(linePen2);
+
+    predictionBar = new QGraphicsLineItem();
+    QPen linePen3;
+    linePen3.setColor(Qt::yellow);
+    linePen3.setWidth(5);
+    predictionBar->setPen(linePen3);
+
     aiInfo = new QGraphicsTextItem();
     aiInfo->setPlainText(QObject::tr("***AI***\n\nNeuron count: %1\nBatch size: %2\nEpochs: %3\nUpdate interval: %4\n").arg(QString::number(neuronCount), QString::number(batchSize), QString::number(epochs), QString::number(updateInterval)));
     aiInfo->setPos(0, game->scene->ground->y() + 35);
 
     game->scene->addItem(aiInfo);
     game->scene->addItem(vectorLine);
+    game->scene->addItem(birdSpeedVectorLine);
+    game->scene->addItem(predictionBar);
+
+    birdSpeed = new QTimer();
+    birdSpeed->setInterval(10);
+    birdOldY = game->scene->bird->y();
+    QObject::connect(birdSpeed, &QTimer::timeout, [this]() {
+        // Calculate instant speed of the bird
+        birdSpeedY = -((game->scene->bird->y() - birdOldY) / birdSpeed->interval());
+        birdOldY = game->scene->bird->y();
+    });
 
     updater = new QTimer();
     updater->setInterval(updateInterval);
@@ -67,15 +91,22 @@ AI::AI(class Game *parent_game, int aiNeuronCount, int aiBatchSize, int aiEpochs
         if(game->isGameFinished() || !game->isGameStarted())
         {
             vectorLine->setVisible(false);
+            birdSpeedVectorLine->setVisible(false);
+            predictionBar->setVisible(false);
+            birdSpeed->stop();
             return;
         }
         vectorLine->setVisible(true);
+        birdSpeedVectorLine->setVisible(true);
+        if(game->aiPlays)
+            predictionBar->setVisible(true);
+        birdSpeed->start();
         update();
     });
     updater->start();
 
-
-    network << tiny_dnn::fully_connected_layer(2, neuronCount) << tiny_dnn::tanh_layer();
+    network << tiny_dnn::fully_connected_layer(3, neuronCount) << tiny_dnn::tanh_layer();
+    network << tiny_dnn::fully_connected_layer(neuronCount, neuronCount) << tiny_dnn::tanh_layer();
     network << tiny_dnn::fully_connected_layer(neuronCount, neuronCount) << tiny_dnn::tanh_layer();
     network << tiny_dnn::fully_connected_layer(neuronCount, neuronCount) << tiny_dnn::tanh_layer();
     network << tiny_dnn::fully_connected_layer(neuronCount, 1) << tiny_dnn::sigmoid_layer();
@@ -83,8 +114,14 @@ AI::AI(class Game *parent_game, int aiNeuronCount, int aiBatchSize, int aiEpochs
 
 AI::~AI()
 {
+    birdSpeed->stop();
+    delete birdSpeed;
     updater->stop();
     delete updater;
+    game->scene->removeItem(predictionBar);
+    delete predictionBar;
+    game->scene->removeItem(birdSpeedVectorLine);
+    delete birdSpeedVectorLine;
     game->scene->removeItem(vectorLine);
     delete vectorLine;
     game->scene->removeItem(aiInfo);
@@ -109,11 +146,18 @@ Physics::Vector2D AI::update(bool reg)
 
     float normalX = normalize(actual.x, game->getScreenWidth());
     float normalY = normalize(actual.y, game->getScreenHeight());
+    float normalSpeed = normalize(birdSpeedY, game->getScreenHeight());
 
-    tiny_dnn::vec_t i = {{normalX, normalY}};
+    qreal birdMiddle = game->scene->bird->x() + game->scene->bird->boundingRect().width() / 2;
+    qreal speedStartY = birdSpeedY >= 0 ? game->scene->bird->y() - 25 : game->scene->bird->y() + game->scene->bird->boundingRect().height() + 25;
+    // qreal speedEndY = birdSpeedY >= 0 ? speedStartY - normalSpeed * 10000 : speedStartY - normalSpeed * 10000;
+    qreal speedEndY = speedStartY - normalSpeed * 10000;
+    birdSpeedVectorLine->setLine(birdMiddle, speedStartY, birdMiddle, speedEndY);
+
+    tiny_dnn::vec_t i = {{normalX, normalY, birdSpeedY /* normalSpeed */}};
     tiny_dnn::vec_t o = {0.0f};
 
-    QString text = QObject::tr("***Pushed Back!***\n#Vector2D(%1, %2) [to input (correct when output=0.0f)]\n-> Normalized x: %3 - y: %4)\n#bool($1$) [to output] -> $2$\nTotal: %5\n").arg(QString::number(actual.x), QString::number(actual.y), QString::number(normalX), QString::number(normalY), QString::number(updateCount));
+    QString text = QObject::tr("***Pushed Back!***\n# Vector2D(%1, %2) [to input (correct when output=0.0f)]\n-> Normalized x: %3 - y: %4)\n# Bird y speed: %5 [to input]\n# bool($1$) [to output] -> $2$\nTotal: %6\n").arg(QString::number(actual.x), QString::number(actual.y), QString::number(normalX), QString::number(normalY), QString::number(birdSpeedY), QString::number(updateCount));
 
     if(reg)
     {
@@ -144,6 +188,8 @@ Physics::Vector2D AI::update(bool reg)
                 aiInfo->setPlainText(aiInfo->toPlainText().replace("***[AI CLICK]***\n", ""));
             });
         }
+        qreal middle = game->scene->ground->y() / 2;
+        predictionBar->setLine(10, middle - prediction * middle, 10, middle + prediction * middle);
     }
     ++updateCount;
     return actual;
@@ -154,7 +200,7 @@ void AI::birdTriggered()
 {
     if(!(vector.x == -game->getScreenWidth() && vector.y == -game->getScreenHeight()))
     {
-        tiny_dnn::vec_t i = {{normalize(vector.x, game->getScreenWidth()), normalize(vector.y, game->getScreenHeight())}};
+        tiny_dnn::vec_t i = {{normalize(vector.x, game->getScreenWidth()), normalize(vector.y, game->getScreenHeight()), birdSpeedY}};
         tiny_dnn::vec_t o = {1.0f};
 
         input.push_back(i);
@@ -229,7 +275,7 @@ void AI::stopTrain()
 
 bool AI::predictClick(Physics::Vector2D instant_vector, float *prediction_ref)
 {
-     tiny_dnn::vec_t vec = {{normalize(instant_vector.x, game->getScreenWidth()), normalize(instant_vector.y, game->getScreenHeight())}};
+     tiny_dnn::vec_t vec = {{normalize(instant_vector.x, game->getScreenWidth()), normalize(instant_vector.y, game->getScreenHeight()), birdSpeedY}};
      float predicted = network.predict(vec)[0];
 
      if(prediction_ref)

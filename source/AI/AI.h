@@ -51,6 +51,8 @@ private:
     int updateCount;
 
     float clickThreshold;
+    float birdSpeedY;
+    float birdOldY;
 
     bool realtimeLearn;
     bool selfTrain;
@@ -61,12 +63,15 @@ private:
 
     class QTimer *updater;
     class QTimer *randomPlayer;
+    class QTimer *birdSpeed;
 
     Physics::Vector2D update(bool reg = true);
 
     bool predictClick(Physics::Vector2D instant_vector, float *prediction_ref = nullptr);
 
     class QGraphicsLineItem *vectorLine;
+    class QGraphicsLineItem *birdSpeedVectorLine;
+    class QGraphicsLineItem *predictionBar;
     class QGraphicsTextItem *aiInfo;
 
     tiny_dnn::network<tiny_dnn::sequential> network;
