@@ -13,9 +13,12 @@ VERSION = 1.0.0
 
 DEFINES += QT_DEPRECATED_WARNINGS
 
-INCLUDEPATH += $$PWD/source
+INCLUDEPATH += $$PWD/source \
+               $$PWD/source/tiny-dnn
 
 win32:RC_ICONS += assets/icon.ico
+
+CONFIG += c++14
 
 SOURCES += \
     source/MainWindow/MainWindow.cpp \
@@ -27,7 +30,8 @@ SOURCES += \
     source/main.cpp \
     source/Sound/Sound.cpp \
     source/View/View.cpp \
-    source/StrobeDialog/StrobeDialog.cpp
+    source/StrobeDialog/StrobeDialog.cpp \
+    source/AI/AI.cpp
 
 HEADERS += \
     source/MainWindow/MainWindow.h \
@@ -39,7 +43,8 @@ HEADERS += \
     source/common.h \
     source/Sound/Sound.h \
     source/View/View.h \
-    source/StrobeDialog/StrobeDialog.h
+    source/StrobeDialog/StrobeDialog.h \
+    source/AI/AI.h
 
 RESOURCES += \
     assets/Resource.qrc
