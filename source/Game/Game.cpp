@@ -154,14 +154,16 @@ void Game::clickEvent()
 
             gameStarted = true;
         }
-
-        if(scene->isGroupVisible(GROUP_NEWROUND))
-            scene->fadeGroup(GROUP_NEWROUND, false, 5);
-
+        else
+        {
 #ifndef AI_DISABLED
         if(ai)
             ai->birdTriggered();
 #endif
+        }
+
+        if(scene->isGroupVisible(GROUP_NEWROUND))
+            scene->fadeGroup(GROUP_NEWROUND, false, 5);
 
         scene->bird->rise();
 
