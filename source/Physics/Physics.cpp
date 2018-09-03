@@ -32,7 +32,7 @@ SOFTWARE.
 
 
 Physics::Physics(Game *parent_game, int tickRate, bool complexAnalyse, bool isOnlyGround, qreal speedFactor, bool isCollisionDetectionDisabled)
- :  game(parent_game), speedfactor(speedFactor), collisionDetectionDisabled(isCollisionDetectionDisabled), complexAnalysis(complexAnalyse), onlyGround(isOnlyGround), updateInterval(tickRate)
+ :  speedfactor(speedFactor), collisionDetectionDisabled(isCollisionDetectionDisabled), game(parent_game), complexAnalysis(complexAnalyse), onlyGround(isOnlyGround), updateInterval(tickRate)
 {
     _transform = new QTransform();
 
