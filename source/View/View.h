@@ -35,10 +35,10 @@ private:
     class QTimer *strobeFPSUpdater;
     int frameCount;
     int tick;
-    class Strobe_Core *strobe;
+    class StrobeCore *strobe;
 
 public:
-    View(QWidget *parent, class Strobe_Core *strobe_core = nullptr);
+    View(QWidget *parent, class StrobeCore *strobe_core = nullptr);
     ~View();
 
     float fps();

@@ -51,10 +51,6 @@ RESOURCES += \
 
 # strobe-api :
 
-SOURCES += \
-    source/strobe-api/strobe/strobe-api.cpp \
-    source/strobe-api/strobe/strobe-core.cpp
-
 HEADERS += \
     source/strobe-api/strobe/strobe-api.h \
     source/strobe-api/strobe/strobe-core.h

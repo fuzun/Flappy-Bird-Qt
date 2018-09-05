@@ -41,7 +41,7 @@ protected:
 
     class QSettings *config, *settings;
 
-    class Strobe_Core *strobe;
+    class StrobeCore *strobe;
 
     class StrobeDialog *strobeDialog;
 

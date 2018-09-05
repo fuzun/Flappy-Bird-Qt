@@ -44,16 +44,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 #ifndef STROBE_DISABLED
     config->beginGroup(CONFIG_STROBE);
     strobeEnabled = config->value(CONFIG_STROBE_ENABLED, STROBE_ENABLED).toBool();
-    int strobeMethod = config->value(CONFIG_STROBE_METHOD, STROBE_DEFAULT_METHOD).toInt();
+    int strobeMode = config->value(CONFIG_STROBE_MODE, STROBE_DEFAULT_MODE).toInt();
     int strobeDialogUpdateInterval = config->value(CONFIG_STROBE_DIALOG_UPDATEINTERVAL, STROBE_DEFAULT_DIALOG_UPDATEINTERVAL).toInt();
     bool strobeDialogEnabled = config->value(CONFIG_STROBE_DIALOG_ENABLED, STROBE_DEFAULT_DIALOG_ENABLED).toBool();
-    int strobeCooldownDelay = config->value(CONFIG_STROBE_COOLDOWN_DELAY, STROBE_DEFAULT_COOLDOWN_DELAY).toInt();
-    int strobeSwapInterval = config->value(CONFIG_STROBE_SWAPINTERVAL, STROBE_DEFAULT_SWAPINTERVAL).toInt();
-    double deviationLimit = config->value(CONFIG_STROBE_DEVIATION_LIMIT, STROBE_DEFAULT_DEVIATION_LIMIT).toDouble();
+    int strobeSwitchInterval = config->value(CONFIG_STROBE_SWITCHINTERVAL, STROBE_DEFAULT_SWITCHINTERVAL).toInt();
     config->endGroup();
 
-    if(strobeEnabled || strobeMethod == 0)
-        strobe = new Strobe_Core(strobeMethod, strobeCooldownDelay, strobeSwapInterval, deviationLimit);
+    if(strobeEnabled || strobeMode == 0)
+        strobe = new StrobeCore(strobeMode, strobeSwitchInterval);
     else
         strobe = nullptr;
 #else
@@ -129,8 +127,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 #ifndef STROBE_DISABLED
         if(strobeEnabled)
         {
-
-            strobe->setMethod(0);
+            strobe->setMode(0);
+            strobe->disable();
         }
 #endif
     }

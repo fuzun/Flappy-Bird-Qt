@@ -29,7 +29,7 @@ SOFTWARE.
 #include "strobe-api/strobe/strobe-core.h"
 #endif
 
-View::View(QWidget *parent, Strobe_Core *strobe_core) : QGraphicsView(parent), strobe(strobe_core)
+View::View(QWidget *parent, StrobeCore *strobe_core) : QGraphicsView(parent), strobe(strobe_core)
 {
     frameCount = 0;
     tick = 0;
