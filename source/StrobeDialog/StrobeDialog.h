@@ -32,7 +32,7 @@ class StrobeDialog : public QDialog
     Q_OBJECT
 
 public:
-    StrobeDialog(class StrobeCore *strobe_core, QWidget *parent = nullptr, int posX = 0, int posY = 0, int interval = 0);
+    StrobeDialog(class StrobeAPI *strobeAPI, QWidget *parent = nullptr, int posX = 0, int posY = 0, int interval = 0);
 
     void setPos(int posX, int posY);
     void setInterval(int interval);
@@ -46,7 +46,7 @@ private:
 
     class QTimer *updateTimer;
 
-    class StrobeCore *strobe;
+    class StrobeAPI *strobe;
 
 private slots:
     void updateInfo();

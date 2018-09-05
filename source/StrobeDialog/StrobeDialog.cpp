@@ -28,7 +28,7 @@ SOFTWARE.
 
 #include "strobe-api/strobe/strobe-core.h"
 
-StrobeDialog::StrobeDialog(StrobeCore *strobe_core, QWidget *parent, int posX, int posY, int interval) : QDialog(parent), strobe(strobe_core)
+StrobeDialog::StrobeDialog(StrobeAPI *strobeAPI, QWidget *parent, int posX, int posY, int interval) : QDialog(parent), strobe(strobeAPI)
 {
     setMinimumSize(500, 525);
 
