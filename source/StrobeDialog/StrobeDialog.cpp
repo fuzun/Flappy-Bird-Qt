@@ -20,6 +20,8 @@ SOFTWARE.
 
 #include "StrobeDialog.h"
 
+#ifndef STROBE_DISABLED
+
 #include <QLabel>
 #include <QLayout>
 #include <QTimer>
@@ -75,3 +77,4 @@ void StrobeDialog::updateInfo()
     info->setText(QString(strobe->getDebugInformation()));
 }
 
+#endif
