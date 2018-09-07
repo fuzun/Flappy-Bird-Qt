@@ -46,6 +46,7 @@ private:
 
     class QTimer *updateTimer;
 
+protected:
     class StrobeAPI *strobe;
 
 private slots:
