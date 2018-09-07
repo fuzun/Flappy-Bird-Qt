@@ -44,7 +44,8 @@ HEADERS += \
     source/Sound/Sound.h \
     source/View/View.h \
     source/StrobeDialog/StrobeDialog.h \
-    source/AI/AI.h
+    source/AI/AI.h \
+    source/vector.h
 
 RESOURCES += \
     assets/Resource.qrc

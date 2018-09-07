@@ -23,6 +23,8 @@ SOFTWARE.
 
 #include <QApplication>
 
+#include "vector.h"
+
 #define TRUE 1
 #define FALSE 0
 
@@ -109,7 +111,7 @@ SOFTWARE.
 
 
 #define PREFIX_IMG ":/graphics/"
-#define PREFIX_SND PREFIX_SND ""
+#define PREFIX_SND ":/sounds/"
 
 #define IMG_BACKGROUND_DAY PREFIX_IMG "background_day.png"
 #define IMG_BACKGROUND_NIGHT PREFIX_IMG "background_night.png"
