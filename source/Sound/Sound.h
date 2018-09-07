@@ -25,11 +25,11 @@ SOFTWARE.
 
 class Game;
 
-class Sound : protected QSound
+class Sound : public QSound
 {
     Q_OBJECT
 
-private:
+protected:
     Game *game;
 
 public:
