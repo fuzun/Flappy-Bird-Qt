@@ -23,8 +23,6 @@ SOFTWARE.
 
 #include "AI.h"
 
-#ifndef AI_DISABLED
-
 #include <QTimer>
 #include <QGraphicsLineItem>
 #include <QGraphicsTextItem>
@@ -283,5 +281,3 @@ bool AI::predictClick(Physics::Vector2D instant_vector, float *prediction_ref)
 
      return predicted >= clickThreshold ? true : false;
 }
-
-#endif
