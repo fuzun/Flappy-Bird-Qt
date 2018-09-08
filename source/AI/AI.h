@@ -24,7 +24,6 @@ SOFTWARE.
 #ifndef AI_H
 #define AI_H
 
-#include "Physics/Physics.h"
 #include "tiny_dnn/tiny_dnn.h"
 
 class AI
@@ -59,15 +58,15 @@ private:
     bool predictClicked;
     bool epochReset;
 
-    Physics::Vector2D vector;
+    Vector2<qreal> vector;
 
     class QTimer *updater;
     class QTimer *randomPlayer;
     class QTimer *birdSpeed;
 
-    Physics::Vector2D update(bool reg = true);
+    Vector2<qreal> update(bool reg = true);
 
-    bool predictClick(Physics::Vector2D instant_vector, float *prediction_ref = nullptr);
+    bool predictClick(Vector2<qreal> instant_vector, float *prediction_ref = nullptr);
 
     class QGraphicsLineItem *vectorLine;
     class QGraphicsLineItem *birdSpeedVectorLine;

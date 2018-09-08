@@ -18,9 +18,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#define _SCL_SECURE_NO_WARNINGS
 #define CNN_NO_SERIALIZATION
-
 #include "AI.h"
 
 #ifndef AI_DISABLED
@@ -33,7 +31,6 @@ SOFTWARE.
 #include "Game/Game.h"
 #include "Scene/Scene.h"
 #include "Bird/Bird.h"
-#include "Physics/Physics.h"
 
 
 AI::AI(class Game *parent_game, int aiNeuronCount, int aiBatchSize, int aiEpochs, int aiUpdateInterval, float aiClickThreshold)
@@ -128,10 +125,10 @@ AI::~AI()
     delete aiInfo;
 }
 
-Physics::Vector2D AI::update(bool reg)
+Vector2<qreal> AI::update(bool reg)
 {
     int index = game->birdClosestPipe;
-    Physics::Vector2D start, end, actual;
+    Vector2<qreal> start, end, actual;
 
     end.x = game->scene->pipe[0][index]->x() + game->scene->pipe[0][index]->boundingRect().width();
     end.y = ((game->scene->pipe[0][index]->y() + game->scene->pipe[0][index]->boundingRect().height()) + game->scene->pipe[1][index]->y()) / 2.0f;
@@ -273,9 +270,9 @@ void AI::stopTrain()
     aiInfo->setPlainText("***Training has been stopped!***");
 }
 
-bool AI::predictClick(Physics::Vector2D instant_vector, float *prediction_ref)
+bool AI::predictClick(Vector2<qreal> instant_vector, float *prediction_ref)
 {
-     tiny_dnn::vec_t vec = {{normalize(instant_vector.x, game->getScreenWidth()), normalize(instant_vector.y, game->getScreenHeight()), birdSpeedY}};
+     tiny_dnn::vec_t vec = {{normalize((float)instant_vector.x, game->getScreenWidth()), normalize((float)instant_vector.y, game->getScreenHeight()), birdSpeedY}};
      float predicted = network.predict(vec)[0];
 
      if(prediction_ref)
