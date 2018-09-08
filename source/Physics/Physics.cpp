@@ -121,14 +121,6 @@ bool Physics::isOnlyGround()
     return onlyGround;
 }
 
-Physics::Vector2D Physics::generateVector2D(float x, float y)
-{
-    Vector2D vector2d;
-    vector2d.x = x;
-    vector2d.y = y;
-    return vector2d;
-}
-
 bool Physics::collisionCheckComplex(const QGraphicsPixmapItem& item_pipe)
 {
     _itemPipe.x = item_pipe.x();
