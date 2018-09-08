@@ -27,6 +27,11 @@ struct Vector2
     T x;
     T y;
 
+    inline Vector2(void)
+    {
+        reset();
+    }
+
     inline Vector2(T x_, T y_)
     {
         x = x_;
@@ -39,12 +44,17 @@ struct Vector2
         y = vector2.y;
     }
 
-
     inline Vector2 makeVector2(T x_, T y_)
     {
         Vector2 vector2;
         vector2.x = x_;
         vector2.y = y_;
+        return vector2;
+    }
+
+    inline Vector2 *makeVector2Temporary(T x_, T y_)
+    {
+        static Vector2 *vector2 = new Vector2(x_, y_);
         return vector2;
     }
 
@@ -115,8 +125,6 @@ struct Vector2
         vector2.x = (T)0;
         vector2.y = (T)0;
     }
-
 };
-
 
 #endif // VECTOR_H
