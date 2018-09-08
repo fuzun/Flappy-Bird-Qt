@@ -34,7 +34,6 @@ View::View(QWidget *parent, StrobeAPI *strobeAPI) : QGraphicsView(parent), strob
     frameCount = 0;
     tick = 0;
 
-
     fpsTimer = new QElapsedTimer();
     fpsTimer->start();
 
@@ -68,7 +67,7 @@ void View::paintEvent(QPaintEvent *event)
             QGraphicsView::paintEvent(event);
         else
         {
-            QPainter painter(this->viewport());
+            QPainter painter(viewport());
             painter.fillRect(event->rect(), Qt::black);
         }
     }
@@ -85,6 +84,7 @@ float View::fps()
 {
     float elapsedTime = (float)(fpsTimer->elapsed());
     int _frameCount = frameCount;
+
     if((elapsedTime >= 1000.0))
     {
         fpsTimer->restart();

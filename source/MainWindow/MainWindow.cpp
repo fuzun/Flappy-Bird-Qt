@@ -41,6 +41,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     config = new QSettings(QApplication::applicationDirPath() + "/" + CONFIG_FILENAME, QSettings::IniFormat, this);
 
     bool strobeEnabled;
+
 #ifndef STROBE_DISABLED
     config->beginGroup(CONFIG_STROBE);
     strobeEnabled = config->value(CONFIG_STROBE_ENABLED, STROBE_ENABLED).toBool();
@@ -59,13 +60,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     strobeEnabled = false;
 #endif
 
-
     settings = new QSettings(QApplication::organizationName(), QApplication::applicationName(), this);
 
     graphicsView = new View(this, strobe);
 
     graphicsView->setFixedSize(settings->value(CONFIG_SCREENWIDTH, GAME_DEFAULT_SCREENWIDTH).toInt(), settings->value(CONFIG_SCREENHEIGHT, GAME_DEFAULT_SCREENHEIGHT).toInt());
-
 
     // config->beginGroup(CONFIG_GENERAL);
     if(config->value(CONFIG_FULLSCREEN, 0).toBool())
@@ -133,8 +132,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 #endif
     }
 
-    //  QSurfaceFormat::defaultFormat().setSwapInterval(config->value(CONFIG_SWAPINTERVAL, GAME_DEFAULT_SWAPINTERVAL).toInt());
-
     if(config->value(CONFIG_ANTIALIASING, GAME_DEFAULT_ANTIALIASING_ENABLED).toBool())
         graphicsView->setRenderHint(QPainter::Antialiasing);
     else
@@ -154,12 +151,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     setCentralWidget(graphicsView);
-
-    this->adjustSize();
+    adjustSize();
 
     game = new Game(graphicsView, config, settings, screenWidth, screenHeight);
-
-
 
 #ifndef STROBE_DISABLED
     if(strobeDialogEnabled && (strobe != nullptr))
@@ -173,45 +167,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 #endif
 
     resizer = new QTimer(this);
-    connect(resizer, &QTimer::timeout, [this]() {
-        if(!resized)
-        {
-            delete game;
-
-            int newWidth = width();
-            int newHeight = height();
-
-             graphicsView->setFixedSize(newWidth, newHeight);
-
-             this->adjustSize();
-             graphicsView->setMinimumSize(GAME_DEFAULT_SCREENWIDTH, GAME_DEFAULT_SCREENHEIGHT);
-#ifndef STROBE_DISABLED
-             if(strobeDialog != nullptr)
-             {
-                 int availableWidth = QGuiApplication::primaryScreen()->availableSize().width();
-                 int availableHeight = QGuiApplication::primaryScreen()->availableSize().height();
-                if((availableHeight - newHeight < 100) && (availableWidth - newWidth < 100))
-                {
-                    strobeDialog->setPos(availableWidth - strobeDialog->width() - 20, availableHeight - strobeDialog->height() - 20);
-                }
-                else
-                    strobeDialog->setPos(x() + newWidth + 20, y());
-             }
-#endif
-            game = new Game(graphicsView, config, settings, newWidth, newHeight);
-            resizer->stop();
-        }
-
-        resized = false;
-    });
-
+    connect(resizer, SIGNAL(timeout()), this, SLOT(resizeTriggered()));
 }
-
 
 MainWindow::~MainWindow()
 {
-    settings->setValue(CONFIG_SCREENWIDTH, this->width());
-    settings->setValue(CONFIG_SCREENHEIGHT, this->height());
+    settings->setValue(CONFIG_SCREENWIDTH, width());
+    settings->setValue(CONFIG_SCREENHEIGHT, height());
     settings->sync();
 
     delete game;
@@ -225,8 +187,10 @@ MainWindow::~MainWindow()
 void MainWindow::prepareManualViewportUpdate()
 {
     graphicsView->setViewportUpdateMode(QGraphicsView::NoViewportUpdate);
+
     QTimer *renderTimer = new QTimer(this);
     renderTimer->setInterval(0);
+
     connect(renderTimer, &QTimer::timeout, [this, renderTimer]() {
         // QApplication::processEvents();
         graphicsView->viewport()->update();
@@ -251,4 +215,36 @@ void MainWindow::moveEvent(QMoveEvent *event)
     if(strobeDialog != nullptr)
         strobeDialog->setPos(x() + width() + 20, y());
 #endif
+}
+
+void MainWindow::resizeTriggered()
+{
+    if(!resized)
+    {
+        delete game;
+
+        int newWidth = width();
+        int newHeight = height();
+
+        graphicsView->setFixedSize(newWidth, newHeight);
+        adjustSize();
+        graphicsView->setMinimumSize(GAME_DEFAULT_SCREENWIDTH, GAME_DEFAULT_SCREENHEIGHT);
+
+#ifndef STROBE_DISABLED
+         if(strobeDialog != nullptr)
+         {
+            int availableWidth = QGuiApplication::primaryScreen()->availableSize().width();
+            int availableHeight = QGuiApplication::primaryScreen()->availableSize().height();
+
+            if((availableHeight - newHeight < 100) && (availableWidth - newWidth < 100))
+                strobeDialog->setPos(availableWidth - strobeDialog->width() - 20, availableHeight - strobeDialog->height() - 20);
+            else
+                strobeDialog->setPos(x() + newWidth + 20, y());
+         }
+#endif
+        game = new Game(graphicsView, config, settings, newWidth, newHeight);
+        resizer->stop();
+    }
+
+    resized = false;
 }

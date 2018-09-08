@@ -40,7 +40,7 @@ SOFTWARE.
 #include "AI/AI.h"
 #endif
 
-Game::Game(View *GraphicsView, class QSettings *cfg, class QSettings *settings, int windowWidth, int windowHeight)
+Game::Game(View *GraphicsView, QSettings *cfg, QSettings *settings, int windowWidth, int windowHeight)
     : graphicsView(GraphicsView), screenWidth(windowWidth), screenHeight(windowHeight), config(cfg), registry(settings)
 {
     scoreRecord = 0;
@@ -139,6 +139,7 @@ qreal Game::getScaleFactor()
 {
     return scaleFactor;
 }
+
 void Game::clickEvent()
 {
     if(gameActuallyStarted)
@@ -200,9 +201,10 @@ bool Game::isAIEnabled()
 
 void Game::AIEnable()
 {
+#ifndef AI_DISABLED
     if(!isAIEnabled())
     {
-#ifndef AI_DISABLED
+
         ai = new AI(this, aiNeuronCount, aiBatchSize, aiEpochs, aiUpdateInterval, aiClickThreshold);
 
         for(int k = 0; k < GROUP_MAX_ITEM_COUNT; k++) // This method should change in future!
@@ -214,8 +216,8 @@ void Game::AIEnable()
                 break;
             }
         }
-#endif
     }
+#endif
 }
 
 void Game::AIDisable()

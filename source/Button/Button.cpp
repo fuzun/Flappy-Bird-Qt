@@ -30,7 +30,7 @@ SOFTWARE.
 
 void ButtonFuncs::about(Game *)
 {
-    QMessageBox::about(0, "About...", QObject::tr("Flappy Bird Qt by fuzun\nVersion: v%1\n\ngithub.com/fuzun/Flappy-Bird-Qt").arg(QCoreApplication::applicationVersion()));
+    QMessageBox::about(0, "About...", QString("Flappy Bird Qt by fuzun\nVersion: v%1\n\ngithub.com/fuzun/Flappy-Bird-Qt").arg(QCoreApplication::applicationVersion()));
 }
 
 void ButtonFuncs::play(Game *game_instance)
@@ -40,7 +40,7 @@ void ButtonFuncs::play(Game *game_instance)
     if(!game_instance->isGameFinished())
     {
          game_instance->prepareFirstGame();
-         game_instance->scene->fadeGroup(GROUP_FIRSTSCREEN, false, 500, GROUP_GAMEPLAY); // 500
+         game_instance->scene->fadeGroup(GROUP_FIRSTSCREEN, false, 500, GROUP_GAMEPLAY);
     }
     else
     {
@@ -71,9 +71,11 @@ void ButtonFuncs::aiPlay(Game *game_instance)
     ButtonFuncs::play(game_instance);
 }
 
+
+
 void Button::invoke(Game *parent_game)
 {
-    bool toggleStatus = this->pixmap() == Pixmap;
+    bool toggleStatus = (pixmap() == Pixmap);
     if(parent_game == nullptr)
         if(toggle && !toggleStatus)
             buttonFunction2(game);
@@ -88,4 +90,3 @@ void Button::invoke(Game *parent_game)
     if(toggle)
         setPixmap(toggleStatus ? Pixmap2 : Pixmap);
 }
-

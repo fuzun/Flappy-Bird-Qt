@@ -23,6 +23,7 @@ SOFTWARE.
 
 #ifndef AI_DISABLED
 
+#include <QString>
 #include <QTimer>
 #include <QGraphicsLineItem>
 #include <QGraphicsTextItem>
@@ -65,7 +66,7 @@ AI::AI(class Game *parent_game, int aiNeuronCount, int aiBatchSize, int aiEpochs
     predictionBar->setPen(linePen3);
 
     aiInfo = new QGraphicsTextItem();
-    aiInfo->setPlainText(QObject::tr("***AI***\n\nNeuron count: %1\nBatch size: %2\nEpochs: %3\nUpdate interval: %4\n").arg(QString::number(neuronCount), QString::number(batchSize), QString::number(epochs), QString::number(updateInterval)));
+    aiInfo->setPlainText(QString("***AI***\n\nNeuron count: %1\nBatch size: %2\nEpochs: %3\nUpdate interval: %4\n").arg(QString::number(neuronCount), QString::number(batchSize), QString::number(epochs), QString::number(updateInterval)));
     aiInfo->setPos(0, game->scene->ground->y() + 35);
 
     game->scene->addItem(aiInfo);
@@ -154,7 +155,7 @@ Vector2<qreal> AI::update(bool reg)
     tiny_dnn::vec_t i = {{normalX, normalY, birdSpeedY /* normalSpeed */}};
     tiny_dnn::vec_t o = {0.0f};
 
-    QString text = QObject::tr("***Pushed Back!***\n# Vector2D(%1, %2) [to input (correct when output=0.0f)]\n-> Normalized x: %3 - y: %4)\n# Bird y speed: %5 [to input]\n# bool($1$) [to output] -> $2$\nTotal: %6\n").arg(QString::number(actual.x), QString::number(actual.y), QString::number(normalX), QString::number(normalY), QString::number(birdSpeedY), QString::number(updateCount));
+    QString text = QString("***Pushed Back!***\n# Vector2D(%1, %2) [to input (correct when output=0.0f)]\n-> Normalized x: %3 - y: %4)\n# Bird y speed: %5 [to input]\n# bool($1$) [to output] -> $2$\nTotal: %6\n").arg(QString::number(actual.x), QString::number(actual.y), QString::number(normalX), QString::number(normalY), QString::number(birdSpeedY), QString::number(updateCount));
 
     if(reg)
     {
@@ -173,13 +174,13 @@ Vector2<qreal> AI::update(bool reg)
     {
         float prediction;
         bool toClick = predictClick(actual, &prediction);
-        aiInfo->setPlainText(aiInfo->toPlainText() + QObject::tr("\n***AI Plays***\n#Click Prediction: %1\n").arg(QString::number(prediction)));
+        aiInfo->setPlainText(aiInfo->toPlainText() + QString("\n***AI Plays***\n#Click Prediction: %1\n").arg(QString::number(prediction)));
         if(!predictClicked && toClick)
         {
             predictClicked = true;
             QApplication::processEvents();
             game->clickEvent();
-            aiInfo->setPlainText(aiInfo->toPlainText() + QObject::tr("***[AI CLICK]***\n"));
+            aiInfo->setPlainText(aiInfo->toPlainText() + QString("***[AI CLICK]***\n"));
             QTimer::singleShot(50, [this]() {
                 predictClicked = false;
                 aiInfo->setPlainText(aiInfo->toPlainText().replace("***[AI CLICK]***\n", ""));
@@ -228,7 +229,7 @@ void AI::epochUpdate()
         aiInfo->setPlainText("***Learning from data!***");
     }
 
-    aiInfo->setPlainText(aiInfo->toPlainText() + QObject::tr("\nepoch: %1 / %2 - loss: %3").arg(QString::number(curEpoch), QString::number(epochs), QString::number(loss)));
+    aiInfo->setPlainText(aiInfo->toPlainText() + QString("\nepoch: %1 / %2 - loss: %3").arg(QString::number(curEpoch), QString::number(epochs), QString::number(loss)));
 
 
     if(curEpoch == epochs)

@@ -42,7 +42,7 @@ Bird::Bird(const QPointF& pos, const QPixmap& pixmap, const qreal &groundStartPo
     oscillateDirection = 1;
     oscillator = new QPropertyAnimation(this, "pos", this);
     oscillator->setDuration(550);
-    oscillator->setEndValue(QPointF(this->boundingRect().width() * 2.75, this->pos().y()));
+    oscillator->setEndValue(QPointF(boundingRect().width() * 2.75, y()));
     oscillator->setEasingCurve(QEasingCurve::OutQuad);
     connect(oscillator, SIGNAL(finished()), SLOT(oscillate()));
 
@@ -59,12 +59,12 @@ void Bird::oscillate()
 
     if(oscillateDirection)
     {
-        oscillator->setEndValue(QPointF(this->x(),this->y() + PARAM_BIRD_OSCILLATE_FACTOR));
+        oscillator->setEndValue(QPointF(x(), y() + PARAM_BIRD_OSCILLATE_FACTOR));
         oscillateDirection = 0;
     }
     else
     {
-        oscillator->setEndValue(QPointF(this->x(),this->y() - PARAM_BIRD_OSCILLATE_FACTOR));
+        oscillator->setEndValue(QPointF(x(), y() - PARAM_BIRD_OSCILLATE_FACTOR));
         oscillateDirection = 1;
     }
     startOscillate();
@@ -130,7 +130,7 @@ void Bird::gravitation()
     rotate(90, 675, QEasingCurve::InCubic);
 
     qreal endPos = groundYPos;
-    qreal curPosY = this->y();
+    qreal curPosY = y();
 
     yAnimator->setStartValue(curPosY);
     yAnimator->setEasingCurve(QEasingCurve::InQuad);
@@ -170,7 +170,7 @@ void Bird::setRotation(qreal angle)
        if (currentRotation != angle)
        {
            currentRotation = angle;
-           QPointF c = this->boundingRect().center();
+           QPointF c = boundingRect().center();
            QTransform t;
            t.translate(c.x(), c.y());
            t.rotate(angle);
@@ -192,7 +192,7 @@ void Bird::stopOscillate()
 
 void Bird::rise()
 {
-    qreal curPosY = this->pos().y();
+    qreal curPosY = y();
     yAnimator->stop();
     yAnimator->setStartValue(curPosY);
     yAnimator->setEasingCurve(QEasingCurve::OutQuad);

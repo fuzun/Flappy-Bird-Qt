@@ -58,6 +58,10 @@ private:
     bool resized;
 
     void prepareManualViewportUpdate();
+
+private slots:
+    void resizeTriggered();
+
 };
 
 

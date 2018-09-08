@@ -59,9 +59,8 @@ private:
     QImage image_endScore;
     QImage groundImage;
 
-    bool *flashStatus;
-    bool *isClickAvailable[2];
-    bool *fadeReady;
+    bool flashStatus;
+    bool isClickAvailable[2];
 
     class QGraphicsOpacityEffect *opacityEffect;
     class QGraphicsOpacityEffect **opacityEffectGroup[2];

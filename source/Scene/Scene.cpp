@@ -34,30 +34,27 @@ SOFTWARE.
 #include "Button/Button.h"
 
 
-
 Scene::Scene(Game *parent_game, const QRectF& rect) : QGraphicsScene(rect), game(parent_game)
 {
-    flashStatus = new bool(0);
+    QPainter _painter;
 
-    fadeReady = new bool(1);
+    flashStatus = false;
 
-    isClickAvailable[0] = new bool(1);
-    isClickAvailable[1] = new bool(1);
+    isClickAvailable[0] = true;
+    isClickAvailable[1] = true;
 
     QPixmap background(IMG_BACKGROUND_DAY);
     background = background.scaled(game->getScreenWidth(), game->getScreenHeight());
     game->graphicsView->setBackgroundBrush(QBrush(background));
 
     game->graphicsView->setScene(this);
-    game->graphicsView->setSceneRect(this->sceneRect());
-
+    game->graphicsView->setSceneRect(sceneRect());
 
 
     QPixmap pixmap_logo(IMG_LOGO);
     PIXMAP_SCALE(pixmap_logo, game->getScaleFactor())
     item_pixmap_logo = new QGraphicsPixmapItem(pixmap_logo);
     item_pixmap_logo->setPos((game->getScreenWidth() / 2) - (pixmap_logo.width() / 2), POS_Y_LOGO(game->getScreenHeight()));
-
 
     QPixmap pixmap_ground(IMG_GROUND_SEGMENT);
     PIXMAP_SCALE(pixmap_ground, game->getScaleFactor())
@@ -84,7 +81,6 @@ Scene::Scene(Game *parent_game, const QRectF& rect) : QGraphicsScene(rect), game
     PIXMAP_SCALE(pixmap_play, game->getScaleFactor())
     item_button_play = new Button(game, pixmap_play, ButtonFuncs::play);
     item_button_play->setPos(game->getScreenWidth() / 2 - pixmap_play.width() * 1.2, ground->y() - pixmap_play.height());
-
 
     QPixmap pixmap_about(IMG_BUTTON_ABOUT);
     PIXMAP_SCALE(pixmap_about, game->getScaleFactor())
@@ -147,13 +143,11 @@ Scene::Scene(Game *parent_game, const QRectF& rect) : QGraphicsScene(rect), game
     item_pixmap_gameInfo->setPos(game->getScreenWidth() / 2 - pixmap_gameInfo.width() / 2, game->getScreenHeight() / 2 - pixmap_gameInfo.height() / 3);
     item_pixmap_gameInfo->setVisible(false);
 
-
     QPixmap pixmap_gameReady(IMG_READY);
     PIXMAP_SCALE(pixmap_gameReady, game->getScaleFactor())
     item_pixmap_gameReady = new QGraphicsPixmapItem(pixmap_gameReady);
     item_pixmap_gameReady->setPos(game->getScreenWidth() / 2 - pixmap_gameReady.width() / 2, item_pixmap_gameInfo->y() - pixmap_gameReady.height() * 1.6);
     item_pixmap_gameReady->setVisible(false);
-
 
     QPixmap pixmap_gameOver(IMG_GAMEOVER);
     PIXMAP_SCALE(pixmap_gameOver, game->getScaleFactor())
@@ -161,14 +155,11 @@ Scene::Scene(Game *parent_game, const QRectF& rect) : QGraphicsScene(rect), game
     item_pixmap_gameOver->setPos(item_pixmap_logo->pos());
     item_pixmap_gameOver->setVisible(false);
 
-
     QPixmap pixmap_scoreBoard(IMG_SCOREBOARD);
     PIXMAP_SCALE(pixmap_scoreBoard, game->getScaleFactor())
     item_pixmap_scoreBoard = new QGraphicsPixmapItem(pixmap_scoreBoard);
     item_pixmap_scoreBoard->setPos(game->getScreenWidth() / 2 - pixmap_scoreBoard.width() / 2, item_pixmap_gameOver->y() + item_pixmap_gameOver->boundingRect().height() + (game->getScreenHeight() / 20.69));
     item_pixmap_scoreBoard->setVisible(false);
-
-    QPainter _painter;
 
     pixmap_bigZero = QPixmap(IMG_BIGNUMBER_ZERO);
     PIXMAP_SCALE(pixmap_bigZero, game->getScaleFactor())
@@ -193,7 +184,6 @@ Scene::Scene(Game *parent_game, const QRectF& rect) : QGraphicsScene(rect), game
     item_pixmap_endScoreRecord = new QGraphicsPixmapItem();
     item_pixmap_endScoreRecord->setVisible(false);
 
-
     QPixmap pixmap_info(IMG_INFO);
     // PIXMAP_SCALE(pixmap_info, game->getScaleFactor())
     item_pixmap_info = new QGraphicsPixmapItem(pixmap_info);
@@ -205,6 +195,7 @@ Scene::Scene(Game *parent_game, const QRectF& rect) : QGraphicsScene(rect), game
     QPointF pos_bird(game->getScreenWidth() / 2 - pixmap_bird_raw.width() / 2, item_pixmap_logo->pos().y() + pixmap_bird_raw.height() * 5);
     bird = new Bird(pos_bird, pixmap_bird, game->getScreenHeight() - ground->boundingRect().height(), game->getScreenWidth(), game->getScreenHeight(), game->getScaleFactor());
 
+    // FIX: Use QList instead
     button[0] = item_button_play;
     button[1] = item_button_about;
     button[2] = item_button_sound;
@@ -212,6 +203,7 @@ Scene::Scene(Game *parent_game, const QRectF& rect) : QGraphicsScene(rect), game
     button[4] = item_button_AIPlay;
     button[5] = nullptr;
 
+    // FIX: Use QList instead
     group_item[GROUP_NEWROUND][0] = item_pixmap_gameInfo;
     group_item[GROUP_NEWROUND][1] = item_pixmap_gameReady;
     group_item[GROUP_NEWROUND][2] = item_button_sound;
@@ -265,14 +257,9 @@ Scene::Scene(Game *parent_game, const QRectF& rect) : QGraphicsScene(rect), game
     addItem(item_pixmap_info);
 }
 
-
 Scene::~Scene()
 {
     delete bird;
-    delete flashStatus;
-    delete fadeReady;
-    delete isClickAvailable[0];
-    delete isClickAvailable[1];
     delete groundPainter;
 }
 
@@ -324,7 +311,7 @@ QPixmap Scene::makeMainScore(int score)
     QPixmap generatedNumber;
     for(int counter = 0; counter < strScore.length(); ++counter)
     {
-        generatedNumber.load(QObject::tr(IMG_BIGNUMBER_GENERIC).arg(strScore.mid(counter, 1)));
+        generatedNumber.load(QString(IMG_BIGNUMBER_GENERIC).arg(strScore.mid(counter, 1)));
 
         if(counter == 0)
             painter.drawPixmap(counter * zeroWidth, 0, zeroWidth, zeroHeight, generatedNumber);
@@ -355,11 +342,13 @@ QPixmap Scene::makeEndingScore(int score, int *pos)
     int counter = 0;
     for(; counter < strScore.length(); ++counter)
     {
-        generatedNumber.load(QObject::tr(IMG_SMALLNUMBER_GENERIC).arg(strScore.mid(counter, 1)));
+        generatedNumber.load(QString(IMG_SMALLNUMBER_GENERIC).arg(strScore.mid(counter, 1)));
         painter.drawPixmap(counter * zeroWidth + 3, 0, zeroWidth, zeroHeight, generatedNumber);
     }
     painter.end();
-    *pos = counter;
+
+    if(pos)
+        *pos = counter;
 
     return QPixmap::fromImage(image_endScore);
 }
@@ -379,10 +368,10 @@ void Scene::updateGround()
 
 void Scene::fadeGroup(int groupIndex, bool show, int duration, int group2Index)
 {
-    if(!*isClickAvailable[0])
+    if(!isClickAvailable[0])
         return;
 
-    *isClickAvailable[0] = 0;
+    isClickAvailable[0] = false;
 
     int endMark = 0;
     while(group_item[groupIndex][endMark] != nullptr)
@@ -423,7 +412,7 @@ void Scene::fadeGroup(int groupIndex, bool show, int duration, int group2Index)
                    group_item[groupIndex][k]->hide();
                }
                if(group2Index == -1)
-                *isClickAvailable[0] = 1;
+                isClickAvailable[0] = true;
             });
 
         opacityAnimGroup[0][k]->setEasingCurve(QEasingCurve::Linear);
@@ -473,7 +462,7 @@ void Scene::fadeGroup(int groupIndex, bool show, int duration, int group2Index)
                    {
                        group_item[group2Index][k]->hide();
                    }
-                   *isClickAvailable[0] = 1;
+                   isClickAvailable[0] = true;
                 });
 
             opacityAnimGroup[1][k]->setEasingCurve(QEasingCurve::Linear);
@@ -483,8 +472,9 @@ void Scene::fadeGroup(int groupIndex, bool show, int duration, int group2Index)
         }
     }
 
-
-    QTimer::singleShot(duration + 5, [this, group2Index]() { // Not the best garbage collector but better than nothing...
+    // Not the best garbage collector but better than nothing...
+    // Fix this later!
+    QTimer::singleShot(duration + 5, [this, group2Index]() {
         delete[] opacityEffectGroup[0];
         delete[] opacityAnimGroup[0];
         if(group2Index != -1)
@@ -493,19 +483,17 @@ void Scene::fadeGroup(int groupIndex, bool show, int duration, int group2Index)
             delete[] opacityAnimGroup[1];
         }
     });
-
 }
-
 
 void Scene::flash(const QColor &color, int duration, const QEasingCurve &curve)
 {
-    if(!*isClickAvailable[1])
+    if(!isClickAvailable[1])
         return;
 
-    QImage refImg = QImage(this->width(), this->height(), QImage::Format_RGB32);
+    QImage refImg = QImage(width(), height(), QImage::Format_RGB32);
     QPainter painter;
 
-    *isClickAvailable[1] = 0;
+    isClickAvailable[1] = false;
 
     opacityEffect = new QGraphicsOpacityEffect(this);
     opacityAnim = new QPropertyAnimation(opacityEffect, "opacity", this);
@@ -513,16 +501,15 @@ void Scene::flash(const QColor &color, int duration, const QEasingCurve &curve)
     item_pixmap_flash = new QGraphicsPixmapItem();
     item_pixmap_flash->setGraphicsEffect(opacityEffect);
 
-
-    *flashStatus = 0;
+    flashStatus = false;
 
     painter.begin(&refImg);
-    painter.fillRect(QRect(0,0,this->width(),this->height()), color);
+    painter.fillRect(QRect(0, 0, width(), height()), color);
     painter.end();
 
     item_pixmap_flash->setPixmap(QPixmap::fromImage(refImg));
 
-    this->addItem(item_pixmap_flash);
+    addItem(item_pixmap_flash);
 
     opacityAnim->setStartValue(0.0);
     opacityAnim->setDuration(duration);
@@ -530,9 +517,7 @@ void Scene::flash(const QColor &color, int duration, const QEasingCurve &curve)
     opacityAnim->setEndValue(1.0);
 
     connect(opacityAnim, &QPropertyAnimation::finished, [=](){
-
-      //  qDebug() << *isClickAvailable;
-        if(*flashStatus == 0)
+        if(flashStatus == false)
         {
             QTimer::singleShot(75, [=]() {
                if(opacityAnim)
@@ -542,25 +527,24 @@ void Scene::flash(const QColor &color, int duration, const QEasingCurve &curve)
                     opacityAnim->setDuration(duration);
                     opacityAnim->start(QAbstractAnimation::DeleteWhenStopped);
                }
-        });
-            *flashStatus = 1;
+            });
+            flashStatus = true;
         }
         else
         {
-            this->removeItem(item_pixmap_flash);
+            removeItem(item_pixmap_flash);
             delete item_pixmap_flash;
-            *flashStatus = 0;
-            *isClickAvailable[1] = 1;
+            flashStatus = false;
+            isClickAvailable[1] = true;
         }
 });
-
     opacityAnim->start();
 }
 
 
 void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    if((!*isClickAvailable[0] || !*isClickAvailable[1]) && !(game->isGameActuallyStarted()))
+    if((!isClickAvailable[0] || !isClickAvailable[1]) && !(game->isGameActuallyStarted()))
     {
         event->accept();
         return;
@@ -573,13 +557,12 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         QApplication::processEvents();
         if (button[k] == 0)
             break;
-        if(this->itemAt(pos, game->graphicsView->transform()) == button[k])
+        if(itemAt(pos, game->graphicsView->transform()) == button[k])
         {
             button[k]->invoke();
             return;
         }
     }
-
 
     game->clickEvent();
     event->accept();
@@ -587,12 +570,12 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void Scene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
-    this->mousePressEvent(event);
+    mousePressEvent(event);
 }
 
 void Scene::keyPressEvent(QKeyEvent *event)
 {
-    if((!*isClickAvailable[0] || !*isClickAvailable[1]) && !(game->isGameActuallyStarted()))
+    if((!isClickAvailable[0] || !isClickAvailable[1]) && !(game->isGameActuallyStarted()))
     {
         event->accept();
         return;
