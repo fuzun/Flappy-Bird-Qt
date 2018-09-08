@@ -30,14 +30,12 @@ SOFTWARE.
 
 StrobeDialog::StrobeDialog(StrobeAPI *strobeAPI, QWidget *parent, int posX, int posY, int interval) : QDialog(parent), strobe(strobeAPI)
 {
-    setMinimumSize(500, 525);
+    setMinimumSize(STROBE_DIALOG_DEFAULT_WIDTH, STROBE_DIALOG_DEFAULT_HEIGHT);
+    setWindowTitle(STROBE_DIALOG_TITLE);
 
-    setWindowTitle("Strobe Info...");
-
-    info = new QLabel(this);
     layout = new QVBoxLayout(this);
+    info = new QLabel(this);
     layout->addWidget(info);
-
     setLayout(layout);
 
     setPos(posX, posY);
@@ -74,7 +72,10 @@ void StrobeDialog::setPos(int posX, int posY)
 
 void StrobeDialog::updateInfo()
 {
-    info->setText(QString(strobe->getDebugInformation()));
+    const char *src = strobe->getDebugInformation();
+    QString Q_src(src);
+
+    info->setText(Q_src);
 }
 
 #endif
