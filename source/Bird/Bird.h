@@ -36,11 +36,11 @@ class Bird : public QObject, public QGraphicsPixmapItem
 public:
     Bird(const QPointF &pos, const QPixmap& pixmap, const qreal& groundStartPosY, int scrWidth, int scrHeight, qreal scaleF);
 
-    typedef enum{
+    enum BirdTypes{
         yellow,
         blue,
         red
-    }BirdTypes;
+    };
 
     void setRotation(qreal angle);
     void startOscillate();
@@ -50,11 +50,12 @@ public:
     void fall();
 
 private:
-    typedef enum{
+    enum WingStates{
         up,
         middle,
         down
-    }WingStates;
+    };
+
     WingStates wingState;
 
     bool wingDirection;
