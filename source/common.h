@@ -29,7 +29,7 @@ SOFTWARE.
 #define FALSE 0
 
 #define GAME_NAME "Flappy Bird Qt"
-#define GAME_VERSION "1.0"
+#define GAME_VERSION "1.5"
 #define GAME_DEFAULT_SCREENWIDTH 480
 #define GAME_DEFAULT_SCREENHEIGHT 800
 #define GAME_DEFAULT_SCALEFACTOR 1.6
@@ -89,6 +89,7 @@ SOFTWARE.
 #define CONFIG_SMOOTHPIXMAPTRANSFORM "SmoothPixmapTransform"
 #define CONFIG_HQANTIALIASING "HighQualityAntiAliasing"
 #define CONFIG_VIEWPORTUPDATE "ViewportUpdateMode"
+
 #define CONFIG_PHYSICS "Physics"
 #define CONFIG_PHYSICS_COMPLEXANALYSIS "ComplexAnalyse"
 #define CONFIG_PHYSICS_TICKRATE "TickRate"
