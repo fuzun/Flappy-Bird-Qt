@@ -106,11 +106,7 @@ void Game::loadConfiguration()
     aiNeuronCount = config->value(CONFIG_AI_NEURONCOUNT, AI_DEFAULT_NEURONCOUNT).toInt();
     aiBatchSize = config->value(CONFIG_AI_BATCHSIZE, AI_DEFAULT_BATCHSIZE).toInt();
     aiEpochs = config->value(CONFIG_AI_EPOCHS, AI_DEFAULT_EPOCHS).toInt();
-    // aiRealtimeLearn = config->value(CONFIG_AI_REALTIMELEARNING, AI_DEFAULT_RealtimeLearning).toBool();
-    aiRealtimeLearn = AI_DEFAULT_RealtimeLearning;
     aiUpdateInterval = config->value(CONFIG_AI_UPDATEINTERVAL, AI_DEFAULT_UPDATEINTERVAL).toInt();
-    // aiSelfTrain = config->value(CONFIG_AI_SELFTRAIN, AI_DEFAULT_SELFTRAIN).toBool();
-    aiSelfTrain = AI_DEFAULT_SELFTRAIN; // Not implemented yet
     aiClickThreshold = config->value(CONFIG_AI_CLICKTHRESHOLD, AI_DEFAULT_CLICKTHRESHOLD).toFloat();
     config->endGroup();
 }
