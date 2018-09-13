@@ -35,7 +35,7 @@ private:
     class QTimer *strobeFPSUpdater;
     int frameCount;
     int tick;
-    class StrobeAPI *strobe;
+
 
 public:
     View(QWidget *parent, class StrobeAPI *strobeAPI = nullptr);
@@ -45,6 +45,8 @@ public:
 
 protected:
     void paintEvent(class QPaintEvent *event) override;
+
+    class StrobeAPI *strobe;
 
 };
 
