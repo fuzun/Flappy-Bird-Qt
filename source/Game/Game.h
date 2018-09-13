@@ -29,7 +29,7 @@ class Game
 {
 public:
     Game(class View *GraphicsView, class QSettings *cfg, class QSettings *registry, int windowWidth, int windowHeight);
-    ~Game();
+    virtual ~Game();
 
    void clickEvent();
    void updateScore();
@@ -82,8 +82,6 @@ private:
     int aiBatchSize;
     int aiEpochs;
     int aiUpdateInterval;
-    bool aiRealtimeLearn;
-    bool aiSelfTrain;
     float aiClickThreshold;
 
     qreal physicsSpeedFactor;
