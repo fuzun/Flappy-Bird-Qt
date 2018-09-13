@@ -31,7 +31,7 @@ class Game;
 class ButtonFuncs
 {
 public:
-    static void about(Game *);
+    static void about(Game *game_instance);
     static void play(Game *game_instance);
     static void soundEnable(Game *game_instance);
     static void soundDisable(Game *game_instance);

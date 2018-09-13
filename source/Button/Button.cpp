@@ -28,9 +28,10 @@ SOFTWARE.
 #include "Scene/Scene.h"
 #include "Sound/Sound.h"
 
-void ButtonFuncs::about(Game *)
+void ButtonFuncs::about(Game *game_instance)
 {
-    QMessageBox::about(0, "About...", QString("Flappy Bird Qt by fuzun\nVersion: v%1\n\ngithub.com/fuzun/Flappy-Bird-Qt").arg(QCoreApplication::applicationVersion()));
+    QWidget *gameQObject = dynamic_cast<QWidget *>(game_instance);
+    QMessageBox::about(gameQObject, "About...", QString("Flappy Bird Qt by fuzun\nVersion: v%1\n\ngithub.com/fuzun/Flappy-Bird-Qt").arg(QCoreApplication::applicationVersion()));
 }
 
 void ButtonFuncs::play(Game *game_instance)
