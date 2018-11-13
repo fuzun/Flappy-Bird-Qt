@@ -14,7 +14,8 @@ VERSION = 1.5.0
 DEFINES += QT_DEPRECATED_WARNINGS
 
 INCLUDEPATH += $$PWD/source \
-               $$PWD/source/tiny-dnn
+               $$PWD/source/tiny-dnn \
+               $$PWD/source/strobe-api/strobe
 
 win32:RC_ICONS += assets/icon.ico
 
@@ -50,7 +51,3 @@ HEADERS += \
 RESOURCES += \
     assets/Resource.qrc
 
-# strobe-api :
-HEADERS += \
-    source/strobe-api/strobe/strobe-api.h \
-    source/strobe-api/strobe/strobe-core.h
