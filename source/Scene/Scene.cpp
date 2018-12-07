@@ -406,7 +406,7 @@ void Scene::fadeGroup(int groupIndex, bool show, int duration, int group2Index)
         }
 
         QObject::connect(opacityAnimGroup[0][k], &QPropertyAnimation::finished, [=](){
-               group_item[groupIndex][k]->setGraphicsEffect(0);
+               group_item[groupIndex][k]->setGraphicsEffect(nullptr);
                if(!show)
                {
                    group_item[groupIndex][k]->hide();
@@ -457,7 +457,7 @@ void Scene::fadeGroup(int groupIndex, bool show, int duration, int group2Index)
             }
 
             QObject::connect(opacityAnimGroup[1][k], &QPropertyAnimation::finished, [=](){
-                   group_item[group2Index][k]->setGraphicsEffect(0);
+                   group_item[group2Index][k]->setGraphicsEffect(nullptr);
                    if(show)
                    {
                        group_item[group2Index][k]->hide();
@@ -555,7 +555,7 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
     for(unsigned int k = 0; k < ARRAY_SIZE(button); ++k)
     {
         QApplication::processEvents();
-        if (button[k] == 0)
+        if (button[k] == nullptr)
             break;
         if(itemAt(pos, game->graphicsView->transform()) == button[k])
         {
