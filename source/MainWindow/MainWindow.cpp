@@ -191,7 +191,7 @@ void MainWindow::prepareManualViewportUpdate()
     QTimer *renderTimer = new QTimer(this);
     renderTimer->setInterval(0);
 
-    connect(renderTimer, &QTimer::timeout, [this, renderTimer]() {
+    connect(renderTimer, &QTimer::timeout, [this]() {
         // QApplication::processEvents();
         graphicsView->viewport()->update();
     });
