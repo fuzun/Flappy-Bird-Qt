@@ -137,7 +137,7 @@ void Bird::gravitation()
     yAnimator->setEndValue(endPos);
 
 
-    if (curPosY == endPos)
+    if (abs(curPosY - endPos) < 0.01)
     {
         birdDesigner->stop();
         yAnimator->stop();
@@ -167,7 +167,7 @@ void Bird::rotate(const qreal &end, const int& duration, const QEasingCurve& cur
 
 void Bird::setRotation(qreal angle)
 {
-       if (currentRotation != angle)
+       if (abs(currentRotation - angle) > 0.01)
        {
            currentRotation = angle;
            QPointF c = boundingRect().center();
