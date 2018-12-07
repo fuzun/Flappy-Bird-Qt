@@ -13,7 +13,9 @@ VERSION = 1.5.2
 
 DEFINES += QT_DEPRECATED_WARNINGS
 
-INCLUDEPATH += $$PWD/source \
+INCLUDEPATH += $$PWD/source
+
+INCLUDEPATH += \ # submodules
                $$PWD/source/tiny-dnn \
                $$PWD/source/strobe-api/strobe
 
