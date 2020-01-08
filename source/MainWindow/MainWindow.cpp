@@ -36,7 +36,7 @@ SOFTWARE.
 #include "StrobeDialog/StrobeDialog.h"
 #endif
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), strobeDialog(nullptr)
 {
     config = new QSettings(QApplication::applicationDirPath() + "/" + CONFIG_FILENAME, QSettings::IniFormat, this);
 
